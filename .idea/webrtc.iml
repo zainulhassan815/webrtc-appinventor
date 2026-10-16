@@ -9,5 +9,8 @@
         <orderEntry type="sourceFolder" forTests="false" />
         <orderEntry type="library" name="provided-deps" level="project" />
         <orderEntry type="library" name="local-deps" level="project" />
+        <orderEntry type="library" name="org.jetbrains.kotlin:kotlin-stdlib:2.4.20" level="project" />
+        <orderEntry type="library" name="org.jetbrains:annotations:13.0" level="project" />
+        <orderEntry type="library" name="io.github.webrtc-sdk:android:150.7871.01" level="project" />
     </component>
 </module>

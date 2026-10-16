@@ -4,7 +4,7 @@ version: '1.0.0'
 
 # The minimum Android SDK level your extension supports. Minimum SDK defined in
 # AndroidManifest.xml is ignored, you should always define it here.
-min_sdk: 21
+min_sdk: 24
 
 
 # Kotlin specific configuration.
@@ -17,6 +17,7 @@ kotlin:
 # resources (layouts, drawables, etc.) are available at runtime.
 dependencies:
 - org.jetbrains.kotlin:kotlin-stdlib:2.4.20
+- io.github.webrtc-sdk:android:150.7871.01
 #- example.jar                 # Local JAR or AAR file stored in "deps" directory
 #- com.example:foo-bar:1.2.3   # Coordinate of some remote Maven artifact
 

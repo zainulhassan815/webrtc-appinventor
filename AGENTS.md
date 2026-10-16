@@ -27,4 +27,15 @@ and the limits App Inventor imposes.
 
 ## Project notes
 
-Add conventions specific to this project here.
+- `Call` owns one native peer connection. It is main-thread only: every WebRTC
+  callback is posted to the main looper, and nothing fires after `close()`.
+- WebRTC aborts the app natively without `ACCESS_NETWORK_STATE`. Keep it in the
+  manifest.
+- The phone has one audio route, so `CallAudio` is shared by every `PeerConnection`.
+- The JNI library must stay a shared AAR: native code binds to `org.webrtc` names.
+- Kotlin components that are renamed or deleted stay in `components.json` until
+  `rush clean` (rush-cli#78).
+- The AI Companion can't load the WebRTC AAR. Verify with the device tests in
+  `docs/testing.md`, not only `rush build`.
+- `samples/web-call/call.js` is the sample's protocol in JavaScript, shared by the web
+  client and the call test. Change both sides together.

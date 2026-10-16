@@ -8,6 +8,7 @@
 <p align="center">
   <a href="https://github.com/zainulhassan815/webrtc-appinventor/releases/latest">Download</a> ·
   <a href="docs/blocks.md">Blocks</a> ·
+  <a href="docs/sample.md">Sample</a> ·
   <a href="samples/web-call">Web client</a> ·
   <a href="docs/testing.md">Testing</a>
 </p>
@@ -75,7 +76,7 @@ provide. WebRTC calls this signaling:
 Any channel that carries text works: Supabase broadcast, Firebase, a web server, even
 copy and paste. The Video Call sample sends everything as `signal` broadcasts on a
 Supabase channel named `call-<room>`. Presence decides who calls, so two devices joining
-at once don't both send an offer. Its [blocks](samples/video-call) and the
+at once don't both send an offer. [Its blocks](docs/sample.md) and the
 [web client](samples/web-call/call.js) show the whole protocol.
 
 Rooms in the sample are public: anyone with your project's key who knows the room name

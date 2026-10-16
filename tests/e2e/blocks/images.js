@@ -3,13 +3,15 @@ const path = require('path');
 const { open } = require('./editor');
 
 const USAGE = 'usage: images.js <appinventor-dir> <Screen.scm> <Screen.bky> <components.json> <out-dir> ' +
-  '<block id | Component.Event | procedure:name>...';
+  '<block id | Component.Event | procedure:name | global:name>...';
 
 function find(name) {
   const workspace = Blockly.common.getMainWorkspace();
   const [component, event] = name.split('.');
-  const block = workspace.getBlockById(name) || workspace.getTopBlocks(false).find(b => name.startsWith('procedure:')
-    ? b.type === 'procedures_defnoreturn' && b.getFieldValue('NAME') === name.slice('procedure:'.length)
+  const [kind, label] = name.split(':');
+  const named = { procedure: 'procedures_defnoreturn', global: 'global_declaration' }[kind];
+  const block = workspace.getBlockById(name) || workspace.getTopBlocks(false).find(b => named
+    ? b.type === named && b.getFieldValue('NAME') === label
     : b.type === 'component_event' && b.instanceName === component && b.eventName === event);
   if (!block) return false;
   Blockly.exportBlockAsPng(block);

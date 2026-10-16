@@ -59,3 +59,6 @@ prints the ids. `images.js` opens each in App Inventor's blocks editor and saves
 image App Inventor exports, which contains the block. Render each block from its own
 file. `docs/blocks.py` then writes [Blocks](blocks.md).
 
+The sample's images in `docs/images/sample` come from its own screen: pass its `.scm`
+and `.bky`, both extensions' `components.json` merged (`tests/e2e/components.py`), and
+the top-level blocks to render, as `Component.Event` or `global:name`.

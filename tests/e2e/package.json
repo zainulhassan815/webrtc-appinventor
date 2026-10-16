@@ -1,0 +1,7 @@
+{
+  "private": true,
+  "dependencies": {
+    "@supabase/supabase-js": "2.117.3",
+    "puppeteer": "23.11.1"
+  }
+}

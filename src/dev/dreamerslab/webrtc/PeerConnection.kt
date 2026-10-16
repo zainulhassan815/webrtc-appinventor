@@ -47,6 +47,8 @@ class PeerConnection(container: ComponentContainer) : AndroidNonvisibleComponent
     private val remoteVideo = VideoView(form, inset = false)
     private var camera: Camera? = null
     private var microphone: Microphone? = null
+    private var speakerphone = true
+    private var receivingAudio = false
     private var microphoneEnabled = true
     private var cameraEnabled = true
     private var mirrorLocalVideo = true
@@ -95,6 +97,17 @@ class PeerConnection(container: ComponentContainer) : AndroidNonvisibleComponent
     fun CameraEnabled(enabled: Boolean) {
         cameraEnabled = enabled
         camera?.track?.setEnabled(enabled)
+    }
+
+    @SimpleProperty(description = "Whether call audio plays through the loudspeaker. When false, it plays through " +
+        "the earpiece, or a connected headset.")
+    fun Speakerphone() = speakerphone
+
+    @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_BOOLEAN, defaultValue = "True")
+    @SimpleProperty
+    fun Speakerphone(on: Boolean) {
+        speakerphone = on
+        CallAudio.speakerphone(on)
     }
 
     @SimpleProperty(description = "Whether your own video is shown mirrored while the front camera is in use. " +
@@ -170,6 +183,7 @@ class PeerConnection(container: ComponentContainer) : AndroidNonvisibleComponent
         camera = null
         microphone?.dispose()
         microphone = null
+        updateCallAudio()
     }
 
     @SimpleFunction(description = "Shows your camera's video in an arrangement, filling it. Show it in the same " +
@@ -222,6 +236,8 @@ class PeerConnection(container: ComponentContainer) : AndroidNonvisibleComponent
         remoteVideo.show(null)
         call?.close()
         call = null
+        receivingAudio = false
+        updateCallAudio()
         state = ConnectionState.Closed
     }
 
@@ -312,10 +328,13 @@ class PeerConnection(container: ComponentContainer) : AndroidNonvisibleComponent
         localVideo.show(camera?.track)
         updateMirror()
         call?.send(localTracks())
+        updateCallAudio()
         main.post { LocalMediaStarted() }
     }
 
     private fun localTracks(): List<MediaStreamTrack> = listOfNotNull(microphone?.track, camera?.track)
+
+    private fun updateCallAudio() = CallAudio.activate(context, this, microphone != null || receivingAudio)
 
     private fun updateMirror() = localVideo.mirror(mirrorLocalVideo && camera?.front == true)
 
@@ -356,6 +375,10 @@ class PeerConnection(container: ComponentContainer) : AndroidNonvisibleComponent
 
         override fun onRemoteTrack(track: MediaStreamTrack) {
             if (track is VideoTrack) remoteVideo.show(track)
+            if (track.kind() == MediaStreamTrack.AUDIO_TRACK_KIND) {
+                receivingAudio = true
+                updateCallAudio()
+            }
             RemoteTrackAdded(track.kind())
         }
 

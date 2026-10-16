@@ -24,6 +24,12 @@ to sign up for or pay. The `PeerConnection` component wraps
 [WebRTC](https://webrtc.org), the technology browsers use for video calls: camera and
 microphone, the other person's video on screen, and data channels for text messages.
 
+<p align="center">
+  <img src="docs/images/video-call.jpg" alt="A call between a Pixel 7 and a vivo phone running the Video Call sample" width="720">
+</p>
+
+A call between a Pixel 7 and a vivo phone, both running the Video Call sample. Each phone films the laptop's screen, shows the other phone's video, and keeps its own in the corner.
+
 ## Features
 
 - **Calls:** one-to-one audio and video, between two phones or a phone and a browser.

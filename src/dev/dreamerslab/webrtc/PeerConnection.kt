@@ -1,38 +1,63 @@
 package dev.dreamerslab.webrtc
 
+import android.Manifest
 import android.os.Handler
 import android.os.Looper
+import android.view.ViewGroup
+import com.google.appinventor.components.annotations.DesignerProperty
 import com.google.appinventor.components.annotations.Extension
 import com.google.appinventor.components.annotations.Options
 import com.google.appinventor.components.annotations.SimpleEvent
 import com.google.appinventor.components.annotations.SimpleFunction
 import com.google.appinventor.components.annotations.SimpleProperty
+import com.google.appinventor.components.common.PropertyTypeConstants
 import com.google.appinventor.components.runtime.AndroidNonvisibleComponent
+import com.google.appinventor.components.runtime.AndroidViewComponent
 import com.google.appinventor.components.runtime.ComponentContainer
 import com.google.appinventor.components.runtime.EventDispatcher
 import com.google.appinventor.components.runtime.OnDestroyListener
+import com.google.appinventor.components.runtime.OnPauseListener
+import com.google.appinventor.components.runtime.OnResumeListener
+import com.google.appinventor.components.runtime.util.BulkPermissionRequest
 import com.google.appinventor.components.runtime.util.ErrorMessages
 import com.google.appinventor.components.runtime.util.YailList
 import dev.dreamerslab.webrtc.helpers.ConnectionState
+import dev.dreamerslab.webrtc.helpers.VideoScaling
 import org.webrtc.IceCandidate
+import org.webrtc.MediaStreamTrack
 import org.webrtc.PeerConnection.PeerConnectionState
 import org.webrtc.SessionDescription
+import org.webrtc.VideoTrack
 
 @Extension(
-    description = "A WebRTC connection to another device, with data channels for text messages. " +
+    description = "A WebRTC call with another device: audio, video, and data channels for text messages. " +
         "Send the descriptions and ICE candidates it produces to the other device through any channel, " +
         "such as Supabase broadcast, and pass theirs back in.",
     icon = "icon.png",
 )
-class PeerConnection(container: ComponentContainer) : AndroidNonvisibleComponent(container.`$form`()), OnDestroyListener {
+class PeerConnection(container: ComponentContainer) : AndroidNonvisibleComponent(container.`$form`()),
+    OnPauseListener, OnResumeListener, OnDestroyListener {
 
     private val context = container.`$context`()
     private val main = Handler(Looper.getMainLooper())
     private var iceServers = IceServers.googleStun
     private var state = ConnectionState.New
     private var call: Call? = null
+    private val localVideo = VideoView(form, inset = true)
+    private val remoteVideo = VideoView(form, inset = false)
+    private var camera: Camera? = null
+    private var microphone: Microphone? = null
+    private var microphoneEnabled = true
+    private var cameraEnabled = true
+    private var mirrorLocalVideo = true
+    private var scaling = VideoScaling.Fill
+    private var videoWidth = 1280
+    private var videoHeight = 720
+    private var videoFrameRate = 30
 
     init {
+        form.registerForOnPause(this)
+        form.registerForOnResume(this)
         form.registerForOnDestroy(this)
     }
 
@@ -51,8 +76,120 @@ class PeerConnection(container: ComponentContainer) : AndroidNonvisibleComponent
     @Options(ConnectionState::class)
     fun ConnectionState(): String = state.toUnderlyingValue()
 
+    @SimpleProperty(description = "Whether your microphone's audio is sent. When false, the other device hears " +
+        "silence.")
+    fun MicrophoneEnabled() = microphoneEnabled
+
+    @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_BOOLEAN, defaultValue = "True")
+    @SimpleProperty
+    fun MicrophoneEnabled(enabled: Boolean) {
+        microphoneEnabled = enabled
+        microphone?.track?.setEnabled(enabled)
+    }
+
+    @SimpleProperty(description = "Whether your camera's video is sent. When false, the other device sees black.")
+    fun CameraEnabled() = cameraEnabled
+
+    @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_BOOLEAN, defaultValue = "True")
+    @SimpleProperty
+    fun CameraEnabled(enabled: Boolean) {
+        cameraEnabled = enabled
+        camera?.track?.setEnabled(enabled)
+    }
+
+    @SimpleProperty(description = "Whether your own video is shown mirrored while the front camera is in use. " +
+        "The other device always sees it unmirrored.")
+    fun MirrorLocalVideo() = mirrorLocalVideo
+
+    @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_BOOLEAN, defaultValue = "True")
+    @SimpleProperty
+    fun MirrorLocalVideo(mirror: Boolean) {
+        mirrorLocalVideo = mirror
+        updateMirror()
+    }
+
+    @SimpleProperty(description = "How video fits its view: Fill crops the edges, Fit shows the whole picture.")
+    @Options(VideoScaling::class)
+    fun VideoScaling(): String = scaling.toUnderlyingValue()
+
+    @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_CHOICES, editorArgs = ["Fill", "Fit"], defaultValue = "Fill")
+    @SimpleProperty
+    fun VideoScaling(@Options(VideoScaling::class) scaling: String) = attempt("VideoScaling") {
+        this.scaling = requireNotNull(VideoScaling.fromUnderlyingValue(scaling)) { "Unknown video scaling: $scaling" }
+        localVideo.scale(this.scaling == VideoScaling.Fill)
+        remoteVideo.scale(this.scaling == VideoScaling.Fill)
+    }
+
+    @SimpleProperty(description = "The camera's capture width in pixels for the next StartLocalMedia. The camera " +
+        "uses its closest size.")
+    fun VideoWidth() = videoWidth
+
+    @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_NON_NEGATIVE_INTEGER, defaultValue = "1280")
+    @SimpleProperty
+    fun VideoWidth(width: Int) {
+        videoWidth = width
+    }
+
+    @SimpleProperty(description = "The camera's capture height in pixels for the next StartLocalMedia.")
+    fun VideoHeight() = videoHeight
+
+    @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_NON_NEGATIVE_INTEGER, defaultValue = "720")
+    @SimpleProperty
+    fun VideoHeight(height: Int) {
+        videoHeight = height
+    }
+
+    @SimpleProperty(description = "The camera's frames per second for the next StartLocalMedia.")
+    fun VideoFrameRate() = videoFrameRate
+
+    @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_NON_NEGATIVE_INTEGER, defaultValue = "30")
+    @SimpleProperty
+    fun VideoFrameRate(frameRate: Int) {
+        videoFrameRate = frameRate
+    }
+
+    @SimpleFunction(description = "Starts the microphone, the camera or both, asking for permission first. " +
+        "LocalMediaStarted fires when they're ready: create the offer or answer after it so the other device " +
+        "receives them. If the user refuses, Screen.PermissionDenied fires.")
+    fun StartLocalMedia(audio: Boolean, video: Boolean) = attempt("StartLocalMedia") {
+        require(audio || video) { "Start audio, video or both" }
+        val permissions = listOfNotNull(
+            Manifest.permission.RECORD_AUDIO.takeIf { audio },
+            Manifest.permission.CAMERA.takeIf { video },
+        )
+        form.askPermission(object : BulkPermissionRequest(this@PeerConnection, "StartLocalMedia", *permissions.toTypedArray()) {
+            override fun onGranted() = attempt("StartLocalMedia") { startLocalMedia(audio, video) }
+        })
+    }
+
+    @SimpleFunction(description = "Stops the camera and microphone.")
+    fun StopLocalMedia() {
+        call?.stopSending()
+        localVideo.show(null)
+        camera?.dispose()
+        camera = null
+        microphone?.dispose()
+        microphone = null
+    }
+
+    @SimpleFunction(description = "Shows your camera's video in an arrangement, filling it. Show it in the same " +
+        "arrangement as the remote video to get a small picture in the corner.")
+    fun ShowLocalVideo(arrangement: AndroidViewComponent) = attempt("ShowLocalVideo") {
+        localVideo.showIn(viewGroup(arrangement))
+    }
+
+    @SimpleFunction(description = "Shows the other device's video in an arrangement, filling it.")
+    fun ShowRemoteVideo(arrangement: AndroidViewComponent) = attempt("ShowRemoteVideo") {
+        remoteVideo.showIn(viewGroup(arrangement))
+    }
+
+    @SimpleFunction(description = "Switches between the front and back cameras. CameraSwitched fires when done.")
+    fun SwitchCamera() = attempt("SwitchCamera") {
+        requireNotNull(camera) { "Start local media with video first" }.switch()
+    }
+
     @SimpleFunction(description = "Starts a connection by creating an offer. LocalDescriptionSet fires with it: " +
-        "send it to the other device. Create data channels first.")
+        "send it to the other device. Start local media and create data channels first.")
     fun CreateOffer() = attempt("CreateOffer") { call().createOffer() }
 
     @SimpleFunction(description = "Answers an offer passed to SetRemoteDescription. LocalDescriptionSet fires " +
@@ -82,9 +219,26 @@ class PeerConnection(container: ComponentContainer) : AndroidNonvisibleComponent
     @SimpleFunction(description = "Ends the connection. The other device's data channels close, and its " +
         "connection state changes once it notices.")
     fun Close() {
+        remoteVideo.show(null)
         call?.close()
         call = null
         state = ConnectionState.Closed
+    }
+
+    @SimpleEvent(description = "The microphone and camera asked for in StartLocalMedia are ready.")
+    fun LocalMediaStarted() {
+        EventDispatcher.dispatchEvent(this, "LocalMediaStarted")
+    }
+
+    @SimpleEvent(description = "The other device's audio or video arrived. Kind is audio or video. Audio plays " +
+        "by itself; show video with ShowRemoteVideo.")
+    fun RemoteTrackAdded(kind: String) {
+        EventDispatcher.dispatchEvent(this, "RemoteTrackAdded", kind)
+    }
+
+    @SimpleEvent(description = "The camera switched. Front is true when the front camera is now in use.")
+    fun CameraSwitched(front: Boolean) {
+        EventDispatcher.dispatchEvent(this, "CameraSwitched", front)
     }
 
     @SimpleEvent(description = "Your offer or answer is ready. Send type and sdp to the other device, which " +
@@ -125,10 +279,48 @@ class PeerConnection(container: ComponentContainer) : AndroidNonvisibleComponent
         EventDispatcher.dispatchEvent(this, "Error", operation, message)
     }
 
-    override fun onDestroy() = Close()
+    override fun onPause() {
+        camera?.stop()
+    }
 
-    private fun call(): Call =
-        call ?: Call(WebRtc.factory(context), IceServers.parse(iceServers), listener).also { call = it }
+    override fun onResume() {
+        camera?.start()
+    }
+
+    override fun onDestroy() {
+        Close()
+        StopLocalMedia()
+        localVideo.release()
+        remoteVideo.release()
+    }
+
+    private fun call(): Call = call ?: Call(WebRtc.factory(context), IceServers.parse(iceServers), listener).also {
+        it.send(localTracks())
+        call = it
+    }
+
+    private fun startLocalMedia(audio: Boolean, video: Boolean) {
+        StopLocalMedia()
+        val factory = WebRtc.factory(context)
+        microphone = if (audio) Microphone(factory).also { it.track.setEnabled(microphoneEnabled) } else null
+        camera = if (video) {
+            Camera(context, factory, CaptureFormat(videoWidth, videoHeight, videoFrameRate), cameraListener)
+                .also { it.track.setEnabled(cameraEnabled) }
+        } else {
+            null
+        }
+        localVideo.show(camera?.track)
+        updateMirror()
+        call?.send(localTracks())
+        main.post { LocalMediaStarted() }
+    }
+
+    private fun localTracks(): List<MediaStreamTrack> = listOfNotNull(microphone?.track, camera?.track)
+
+    private fun updateMirror() = localVideo.mirror(mirrorLocalVideo && camera?.front == true)
+
+    private fun viewGroup(arrangement: AndroidViewComponent): ViewGroup =
+        arrangement.view as? ViewGroup ?: throw IllegalArgumentException("Pass a HorizontalArrangement or VerticalArrangement")
 
     private fun descriptionType(type: String): SessionDescription.Type =
         SessionDescription.Type.entries.firstOrNull { it.canonicalForm() == type }
@@ -162,6 +354,11 @@ class PeerConnection(container: ComponentContainer) : AndroidNonvisibleComponent
             ConnectionStateChanged(this@PeerConnection.state.toUnderlyingValue())
         }
 
+        override fun onRemoteTrack(track: MediaStreamTrack) {
+            if (track is VideoTrack) remoteVideo.show(track)
+            RemoteTrackAdded(track.kind())
+        }
+
         override fun onChannelOpened(label: String) = DataChannelOpened(label)
 
         override fun onChannelClosed(label: String) = DataChannelClosed(label)
@@ -170,6 +367,17 @@ class PeerConnection(container: ComponentContainer) : AndroidNonvisibleComponent
 
         override fun onError(operation: String, message: String) {
             fail(operation, message)
+        }
+    }
+
+    private val cameraListener = object : CameraListener {
+        override fun onCameraSwitched(front: Boolean) {
+            updateMirror()
+            CameraSwitched(front)
+        }
+
+        override fun onCameraError(message: String) {
+            fail("Camera", message)
         }
     }
 

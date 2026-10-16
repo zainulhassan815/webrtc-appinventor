@@ -7,8 +7,11 @@ import org.webrtc.DataChannel
 import org.webrtc.IceCandidate
 import org.webrtc.MediaConstraints
 import org.webrtc.MediaStream
+import org.webrtc.MediaStreamTrack
 import org.webrtc.PeerConnection
 import org.webrtc.PeerConnectionFactory
+import org.webrtc.RtpSender
+import org.webrtc.RtpTransceiver
 import org.webrtc.SdpObserver
 import org.webrtc.SessionDescription
 import java.nio.ByteBuffer
@@ -17,6 +20,7 @@ internal interface CallListener {
     fun onLocalDescription(description: SessionDescription)
     fun onIceCandidate(candidate: IceCandidate)
     fun onConnectionState(state: PeerConnection.PeerConnectionState)
+    fun onRemoteTrack(track: MediaStreamTrack)
     fun onChannelOpened(label: String)
     fun onChannelClosed(label: String)
     fun onMessage(label: String, text: String)
@@ -35,6 +39,7 @@ internal class Call(
     private val channels = mutableMapOf<String, DataChannel>()
     private val openChannels = mutableSetOf<String>()
     private val pendingCandidates = mutableListOf<IceCandidate>()
+    private val senders = mutableListOf<RtpSender>()
     private var closed = false
 
     fun createOffer() = connection.createOffer(Created("CreateOffer"), MediaConstraints())
@@ -46,6 +51,15 @@ internal class Call(
 
     fun addIceCandidate(candidate: IceCandidate) {
         if (connection.remoteDescription == null) pendingCandidates += candidate else add(candidate)
+    }
+
+    fun send(tracks: List<MediaStreamTrack>) {
+        tracks.forEach { senders += connection.addTrack(it, listOf("local")) }
+    }
+
+    fun stopSending() {
+        senders.forEach(connection::removeTrack)
+        senders.clear()
     }
 
     fun createDataChannel(label: String) {
@@ -144,6 +158,11 @@ internal class Call(
         override fun onIceCandidate(candidate: IceCandidate) = onMain { listener.onIceCandidate(candidate) }
 
         override fun onDataChannel(channel: DataChannel) = observe(channel)
+
+        override fun onTrack(transceiver: RtpTransceiver) {
+            val track = transceiver.receiver.track() ?: return
+            onMain { listener.onRemoteTrack(track) }
+        }
 
         override fun onSignalingChange(state: PeerConnection.SignalingState) = Unit
 

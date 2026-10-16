@@ -1,0 +1,38 @@
+(define-event Screen1 Initialize()(set-this-form)
+  (call-component-method 'Callee 'ShowRemoteVideo (*list-for-runtime* (get-component RemoteView)) '(component))
+  (call-component-method 'Caller 'ShowLocalVideo (*list-for-runtime* (get-component RemoteView)) '(component))
+  (call-component-method 'Caller 'StartLocalMedia (*list-for-runtime* #t #t) '(boolean boolean)))
+
+(define-event Caller ConnectionStateChanged($state)(set-this-form)
+  (when (yail-equal? (lexical-value $state) "Connected") ((get-var p$report) "caller Connected")))
+
+(define-event Caller LocalMediaStarted()(set-this-form)
+  ((get-var p$report) "caller media")
+  (call-component-method 'Caller 'CreateOffer (*list-for-runtime*) '()))
+
+(define-event Caller LocalDescriptionSet($type $sdp)(set-this-form)
+  ((get-var p$report) (string-append "caller " (lexical-value $type)))
+  (call-component-method 'Callee 'SetRemoteDescription (*list-for-runtime* (lexical-value $type) (lexical-value $sdp)) '(text text))
+  (call-component-method 'Callee 'CreateAnswer (*list-for-runtime*) '()))
+
+(define-event Callee LocalDescriptionSet($type $sdp)(set-this-form)
+  ((get-var p$report) (string-append "callee " (lexical-value $type)))
+  (call-component-method 'Caller 'SetRemoteDescription (*list-for-runtime* (lexical-value $type) (lexical-value $sdp)) '(text text)))
+
+(define-event Caller IceCandidateFound($mid $index $candidate)(set-this-form)
+  (call-component-method 'Callee 'AddIceCandidate (*list-for-runtime* (lexical-value $mid) (lexical-value $index) (lexical-value $candidate)) '(text number text)))
+
+(define-event Callee IceCandidateFound($mid $index $candidate)(set-this-form)
+  (call-component-method 'Caller 'AddIceCandidate (*list-for-runtime* (lexical-value $mid) (lexical-value $index) (lexical-value $candidate)) '(text number text)))
+
+(define-event Callee ConnectionStateChanged($state)(set-this-form)
+  (when (yail-equal? (lexical-value $state) "Connected") ((get-var p$report) "callee Connected")))
+
+(define-event Callee RemoteTrackAdded($kind)(set-this-form)
+  ((get-var p$report) (string-append "callee track " (lexical-value $kind))))
+
+(define-event Caller Error($operation $message)(set-this-form)
+  ((get-var p$report) (string-append "caller error " (lexical-value $operation) " " (lexical-value $message))))
+
+(define-event Callee Error($operation $message)(set-this-form)
+  ((get-var p$report) (string-append "callee error " (lexical-value $operation) " " (lexical-value $message))))

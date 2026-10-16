@@ -1,0 +1,53 @@
+(def g$offer "")
+
+(define-event Screen1 Initialize()(set-this-form)
+  (call-component-method 'Caller 'CreateDataChannel (*list-for-runtime* "chat") '(text))
+  (call-component-method 'Caller 'CreateOffer (*list-for-runtime*) '()))
+
+(define-event Caller LocalDescriptionSet($type $sdp)(set-this-form)
+  ((get-var p$report) (string-append "caller " (lexical-value $type)))
+  (set-var! g$offer (lexical-value $sdp)))
+
+(define-event Caller IceCandidateFound($mid $index $candidate)(set-this-form)
+  (call-component-method 'Callee 'AddIceCandidate (*list-for-runtime* (lexical-value $mid) (lexical-value $index) (lexical-value $candidate)) '(text number text))
+  (unless (yail-equal? (get-var g$offer) "")
+    (call-component-method 'Callee 'SetRemoteDescription (*list-for-runtime* "offer" (get-var g$offer)) '(text text))
+    (call-component-method 'Callee 'CreateAnswer (*list-for-runtime*) '())
+    (set-var! g$offer "")))
+
+(define-event Callee LocalDescriptionSet($type $sdp)(set-this-form)
+  ((get-var p$report) (string-append "callee " (lexical-value $type)))
+  (call-component-method 'Caller 'SetRemoteDescription (*list-for-runtime* (lexical-value $type) (lexical-value $sdp)) '(text text)))
+
+(define-event Callee IceCandidateFound($mid $index $candidate)(set-this-form)
+  (call-component-method 'Caller 'AddIceCandidate (*list-for-runtime* (lexical-value $mid) (lexical-value $index) (lexical-value $candidate)) '(text number text)))
+
+(define-event Caller ConnectionStateChanged($state)(set-this-form)
+  (when (yail-equal? (lexical-value $state) "Connected") ((get-var p$report) "caller Connected")))
+
+(define-event Callee ConnectionStateChanged($state)(set-this-form)
+  (when (yail-equal? (lexical-value $state) "Connected") ((get-var p$report) "callee Connected")))
+
+(define-event Caller DataChannelOpened($label)(set-this-form)
+  ((get-var p$report) (string-append "caller opened " (lexical-value $label)))
+  (call-component-method 'Caller 'Send (*list-for-runtime* (lexical-value $label) "hello") '(text text)))
+
+(define-event Callee DataChannelOpened($label)(set-this-form)
+  ((get-var p$report) (string-append "callee opened " (lexical-value $label))))
+
+(define-event Callee MessageReceived($label $text)(set-this-form)
+  ((get-var p$report) (string-append "callee got " (lexical-value $label) " " (lexical-value $text)))
+  (call-component-method 'Callee 'Send (*list-for-runtime* (lexical-value $label) (string-append "echo " (lexical-value $text))) '(text text)))
+
+(define-event Caller MessageReceived($label $text)(set-this-form)
+  ((get-var p$report) (string-append "caller got " (lexical-value $label) " " (lexical-value $text)))
+  (call-component-method 'Caller 'Close (*list-for-runtime*) '()))
+
+(define-event Callee DataChannelClosed($label)(set-this-form)
+  ((get-var p$report) (string-append "callee closed " (lexical-value $label))))
+
+(define-event Caller Error($operation $message)(set-this-form)
+  ((get-var p$report) (string-append "caller error " (lexical-value $operation) " " (lexical-value $message))))
+
+(define-event Callee Error($operation $message)(set-this-form)
+  ((get-var p$report) (string-append "callee error " (lexical-value $operation) " " (lexical-value $message))))

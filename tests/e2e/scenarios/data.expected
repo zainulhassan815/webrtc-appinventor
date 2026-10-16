@@ -1,0 +1,10 @@
+!unordered
+caller offer
+callee answer
+caller Connected
+callee Connected
+caller opened chat
+callee opened chat
+callee got chat hello
+caller got chat echo hello
+callee closed chat

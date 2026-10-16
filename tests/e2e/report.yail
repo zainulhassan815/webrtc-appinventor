@@ -1,0 +1,3 @@
+(def (p$report line)
+  (set-and-coerce-property! 'Label1 'Text
+    (string-append (coerce-to-string (get-property 'Label1 'Text)) (coerce-to-string line) "\n") 'text))

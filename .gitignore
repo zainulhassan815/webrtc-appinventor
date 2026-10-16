@@ -2,3 +2,5 @@
 /.rush
 /.classpath
 /.idea/libraries/
+/.e2e
+__pycache__/

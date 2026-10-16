@@ -1,0 +1,7 @@
+[
+  {"name": "Caller", "type": "PeerConnection"},
+  {"name": "Callee", "type": "PeerConnection"},
+  {"name": "Label1", "type": "Label", "properties": {"Text": ""}},
+  {"name": "LocalView", "type": "HorizontalArrangement", "properties": {"Width": -2, "Height": 300}},
+  {"name": "RemoteView", "type": "HorizontalArrangement", "properties": {"Width": -2, "Height": 300}}
+]

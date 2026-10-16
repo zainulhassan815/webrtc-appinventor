@@ -13,7 +13,7 @@
   <a href="https://github.com/zainulhassan815/webrtc-appinventor/releases/latest">Download</a> ·
   <a href="docs/blocks.md">Blocks</a> ·
   <a href="docs/sample.md">Sample</a> ·
-  <a href="samples/web-call">Web client</a> ·
+  <a href="https://zainulhassan815.github.io/webrtc-appinventor/">Web client</a> ·
   <a href="docs/testing.md">Testing</a>
 </p>
 
@@ -58,8 +58,9 @@ the same room and call each other.
 4. Build the app (Build → Android App) and install it on two phones.
 5. Enter the same room name on both and tap **Join**.
 
-To call from a computer, open [the web client](samples/web-call) in a browser, fill in
-the same project URL, key and room, and join.
+To call from a computer, open the [web client](https://zainulhassan815.github.io/webrtc-appinventor/)
+in a browser, fill in the same project URL, key and room, and join. Its source is in
+[samples/web-call](samples/web-call).
 
 **The AI Companion can't run this extension:** WebRTC ships as an Android library that
 the Companion can't load. Test with an APK build.

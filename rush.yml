@@ -34,11 +34,11 @@ dependencies:
 
 # Homepage of your extension. This may be the announcement thread on community 
 # forums or a link to your GitHub repository.
-#homepage: https://github.com/example/my-extension
+homepage: https://github.com/zainulhassan815/webrtc-appinventor
 
 # Path to the license file of your extension. This should be a path to a local
 # file or link to something hosted online.
-#license: LICENSE.txt
+license: LICENSE
 
 # Where a library from dependencies goes, when Rush's choice doesn't fit:
 # exclude (never resolved), provided (compiled against, not shipped), shared

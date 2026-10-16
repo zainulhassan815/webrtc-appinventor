@@ -1,4 +1,8 @@
 <p align="center">
+  <img src="docs/images/banner.png" alt="WebRTC for App Inventor" width="100%">
+</p>
+
+<p align="center">
   <a href="https://github.com/zainulhassan815/webrtc-appinventor/releases/latest"><img src="https://img.shields.io/github/v/release/zainulhassan815/webrtc-appinventor?color=2f6fde&label=release" alt="Latest release"></a>
   <a href="LICENSE"><img src="https://img.shields.io/github/license/zainulhassan815/webrtc-appinventor?color=f88d34" alt="License"></a>
   <img src="https://img.shields.io/badge/Android-8.0%2B-555" alt="Android 8.0 or newer">

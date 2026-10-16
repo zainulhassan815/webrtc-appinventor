@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Video Call</title>
+  <style>
+    :root { color-scheme: light dark; --bg: #f6f6f4; --fg: #1c1c1a; --panel: #ffffff; --line: #d9d9d4; --accent: #2f6fde; }
+    @media (prefers-color-scheme: dark) { :root { --bg: #161615; --fg: #ececea; --panel: #212120; --line: #3a3a38; --accent: #6c9cf0; } }
+    * { box-sizing: border-box; }
+    body { margin: 0; font: 15px/1.4 system-ui, sans-serif; background: var(--bg); color: var(--fg); }
+    main { max-width: 960px; margin: 0 auto; padding: 16px; display: grid; gap: 12px; }
+    form { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; }
+    input, button { font: inherit; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--fg); }
+    button { cursor: pointer; }
+    button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    button:disabled { opacity: .5; cursor: default; }
+    .stage { position: relative; background: #000; border-radius: 12px; overflow: hidden; aspect-ratio: 16 / 9; }
+    #remote { width: 100%; height: 100%; object-fit: contain; }
+    #local { position: absolute; right: 12px; bottom: 12px; width: 24%; border-radius: 8px; transform: scaleX(-1); }
+    #status { margin: 0; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
+  <script src="call.js"></script>
+</head>
+<body>
+<main>
+  <h1>Video Call</h1>
+  <form id="join">
+    <input id="url" placeholder="Supabase project URL" required>
+    <input id="key" placeholder="Publishable key" required>
+    <input id="room" placeholder="Room name" required>
+    <button class="primary" id="joinButton">Join</button>
+    <button type="button" id="hangUpButton" disabled>Hang up</button>
+  </form>
+  <p id="status">Join the same room as the App Inventor app.</p>
+  <div class="stage">
+    <video id="remote" autoplay playsinline></video>
+    <video id="local" autoplay playsinline muted></video>
+  </div>
+</main>
+<script>
+  const $ = id => document.getElementById(id);
+  const settings = new URLSearchParams(location.hash.slice(1));
+  for (const name of ['url', 'key', 'room']) $(name).value = settings.get(name) ?? localStorage.getItem(name) ?? '';
+  let call = null;
+
+  const finish = message => {
+    call = null;
+    $('status').textContent = message;
+    $('joinButton').disabled = false;
+    $('hangUpButton').disabled = true;
+  };
+
+  $('join').addEventListener('submit', async event => {
+    event.preventDefault();
+    for (const name of ['url', 'key', 'room']) localStorage.setItem(name, $(name).value);
+    $('joinButton').disabled = true;
+    $('hangUpButton').disabled = false;
+    $('status').textContent = 'Starting the camera...';
+    const media = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+    $('local').srcObject = media;
+    call = startCall({
+      client: supabase.createClient($('url').value, $('key').value),
+      room: $('room').value,
+      id: `web${Math.floor(Math.random() * 1e6)}`,
+      media,
+      report: line => { $('status').textContent = line.startsWith('state ') ? `Call: ${line.slice(6)}` : $('status').textContent; },
+      showRemote: stream => { $('remote').srcObject = stream; },
+      ended: () => finish('Call ended by the other person.'),
+    });
+    $('status').textContent = `Waiting for someone to join room ${$('room').value}`;
+  });
+
+  $('hangUpButton').addEventListener('click', async () => {
+    await call?.hangUp();
+    finish('Call ended.');
+  });
+</script>
+</body>
+</html>

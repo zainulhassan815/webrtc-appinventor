@@ -1,0 +1,1353 @@
+<xml xmlns="https://developers.google.com/blockly/xml">
+  <block type="global_declaration" id="b15" x="0" y="0">
+    <field name="NAME">me</field>
+    <value name="VALUE">
+      <block type="text" id="b14">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+  </block>
+  <block type="global_declaration" id="b17" x="0" y="51">
+    <field name="NAME">offered</field>
+    <value name="VALUE">
+      <block type="logic_boolean" id="b16">
+        <field name="BOOL">FALSE</field>
+      </block>
+    </value>
+  </block>
+  <block type="component_event" id="b26" x="0" y="102">
+    <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Form" is_generic="false" instance_name="Screen1" event_name="Initialize"></mutation>
+    <field name="COMPONENT_SELECTOR">Screen1</field>
+    <statement name="DO">
+      <block type="lexical_variable_set" id="b23">
+        <field name="VAR">global me</field>
+        <value name="VALUE">
+          <block type="text_join" id="b22">
+            <mutation xmlns="http://www.w3.org/1999/xhtml" items="2"></mutation>
+            <value name="ADD0">
+              <block type="text" id="b18">
+                <field name="TEXT">u</field>
+              </block>
+            </value>
+            <value name="ADD1">
+              <block type="math_random_int" id="b21">
+                <value name="FROM">
+                  <block type="math_number" id="b19">
+                    <field name="NUM">100000</field>
+                  </block>
+                </value>
+                <value name="TO">
+                  <block type="math_number" id="b20">
+                    <field name="NUM">999999</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+          </block>
+        </value>
+        <next>
+          <block type="component_set_get" id="b25">
+            <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="SupabaseChannel" set_or_get="set" property_name="PresenceKey" is_generic="false" instance_name="Signaling"></mutation>
+            <field name="COMPONENT_SELECTOR">Signaling</field>
+            <field name="PROP">PresenceKey</field>
+            <value name="VALUE">
+              <block type="lexical_variable_get" id="b24">
+                <field name="VAR">global me</field>
+              </block>
+            </value>
+          </block>
+        </next>
+      </block>
+    </statement>
+  </block>
+  <block type="component_event" id="b50" x="0" y="258">
+    <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Button" is_generic="false" instance_name="JoinButton" event_name="Click"></mutation>
+    <field name="COMPONENT_SELECTOR">JoinButton</field>
+    <statement name="DO">
+      <block type="controls_if" id="b49">
+        <mutation xmlns="http://www.w3.org/1999/xhtml" else="1"></mutation>
+        <value name="IF0">
+          <block type="text_isEmpty" id="b28">
+            <value name="VALUE">
+              <block type="component_set_get" id="b27">
+                <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="TextBox" set_or_get="get" property_name="Text" is_generic="false" instance_name="RoomBox"></mutation>
+                <field name="COMPONENT_SELECTOR">RoomBox</field>
+                <field name="PROP">Text</field>
+              </block>
+            </value>
+          </block>
+        </value>
+        <statement name="DO0">
+          <block type="component_set_get" id="b30">
+            <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Label" set_or_get="set" property_name="Text" is_generic="false" instance_name="StatusLabel"></mutation>
+            <field name="COMPONENT_SELECTOR">StatusLabel</field>
+            <field name="PROP">Text</field>
+            <value name="VALUE">
+              <block type="text" id="b29">
+                <field name="TEXT">Enter a room name first.</field>
+              </block>
+            </value>
+          </block>
+        </statement>
+        <statement name="ELSE">
+          <block type="component_method" id="b31">
+            <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="TextBox" method_name="HideKeyboard" is_generic="false" instance_name="RoomBox"></mutation>
+            <field name="COMPONENT_SELECTOR">RoomBox</field>
+            <next>
+              <block type="component_set_get" id="b35">
+                <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="SupabaseChannel" set_or_get="set" property_name="Topic" is_generic="false" instance_name="Signaling"></mutation>
+                <field name="COMPONENT_SELECTOR">Signaling</field>
+                <field name="PROP">Topic</field>
+                <value name="VALUE">
+                  <block type="text_join" id="b34">
+                    <mutation xmlns="http://www.w3.org/1999/xhtml" items="2"></mutation>
+                    <value name="ADD0">
+                      <block type="text" id="b32">
+                        <field name="TEXT">call-</field>
+                      </block>
+                    </value>
+                    <value name="ADD1">
+                      <block type="component_set_get" id="b33">
+                        <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="TextBox" set_or_get="get" property_name="Text" is_generic="false" instance_name="RoomBox"></mutation>
+                        <field name="COMPONENT_SELECTOR">RoomBox</field>
+                        <field name="PROP">Text</field>
+                      </block>
+                    </value>
+                  </block>
+                </value>
+                <next>
+                  <block type="component_set_get" id="b37">
+                    <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Button" set_or_get="set" property_name="Enabled" is_generic="false" instance_name="JoinButton"></mutation>
+                    <field name="COMPONENT_SELECTOR">JoinButton</field>
+                    <field name="PROP">Enabled</field>
+                    <value name="VALUE">
+                      <block type="logic_boolean" id="b36">
+                        <field name="BOOL">FALSE</field>
+                      </block>
+                    </value>
+                    <next>
+                      <block type="component_set_get" id="b39">
+                        <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Button" set_or_get="set" property_name="Enabled" is_generic="false" instance_name="HangUpButton"></mutation>
+                        <field name="COMPONENT_SELECTOR">HangUpButton</field>
+                        <field name="PROP">Enabled</field>
+                        <value name="VALUE">
+                          <block type="logic_boolean" id="b38">
+                            <field name="BOOL">TRUE</field>
+                          </block>
+                        </value>
+                        <next>
+                          <block type="component_method" id="b41">
+                            <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="PeerConnection" method_name="ShowRemoteVideo" is_generic="false" instance_name="Call"></mutation>
+                            <field name="COMPONENT_SELECTOR">Call</field>
+                            <value name="ARG0">
+                              <block type="component_component_block" id="b40">
+                                <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="VerticalArrangement" instance_name="VideoArea"></mutation>
+                                <field name="COMPONENT_SELECTOR">VideoArea</field>
+                              </block>
+                            </value>
+                            <next>
+                              <block type="component_method" id="b43">
+                                <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="PeerConnection" method_name="ShowLocalVideo" is_generic="false" instance_name="Call"></mutation>
+                                <field name="COMPONENT_SELECTOR">Call</field>
+                                <value name="ARG0">
+                                  <block type="component_component_block" id="b42">
+                                    <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="VerticalArrangement" instance_name="VideoArea"></mutation>
+                                    <field name="COMPONENT_SELECTOR">VideoArea</field>
+                                  </block>
+                                </value>
+                                <next>
+                                  <block type="component_set_get" id="b45">
+                                    <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Label" set_or_get="set" property_name="Text" is_generic="false" instance_name="StatusLabel"></mutation>
+                                    <field name="COMPONENT_SELECTOR">StatusLabel</field>
+                                    <field name="PROP">Text</field>
+                                    <value name="VALUE">
+                                      <block type="text" id="b44">
+                                        <field name="TEXT">Starting the camera...</field>
+                                      </block>
+                                    </value>
+                                    <next>
+                                      <block type="component_method" id="b48">
+                                        <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="PeerConnection" method_name="StartLocalMedia" is_generic="false" instance_name="Call"></mutation>
+                                        <field name="COMPONENT_SELECTOR">Call</field>
+                                        <value name="ARG0">
+                                          <block type="logic_boolean" id="b46">
+                                            <field name="BOOL">TRUE</field>
+                                          </block>
+                                        </value>
+                                        <value name="ARG1">
+                                          <block type="logic_boolean" id="b47">
+                                            <field name="BOOL">TRUE</field>
+                                          </block>
+                                        </value>
+                                      </block>
+                                    </next>
+                                  </block>
+                                </next>
+                              </block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </statement>
+      </block>
+    </statement>
+  </block>
+  <block type="component_event" id="b54" x="0" y="753">
+    <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="PeerConnection" is_generic="false" instance_name="Call" event_name="LocalMediaStarted"></mutation>
+    <field name="COMPONENT_SELECTOR">Call</field>
+    <statement name="DO">
+      <block type="component_method" id="b52">
+        <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="SupabaseChannel" method_name="ListenToBroadcast" is_generic="false" instance_name="Signaling"></mutation>
+        <field name="COMPONENT_SELECTOR">Signaling</field>
+        <value name="ARG0">
+          <block type="text" id="b51">
+            <field name="TEXT">signal</field>
+          </block>
+        </value>
+        <next>
+          <block type="component_method" id="b53">
+            <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="SupabaseChannel" method_name="Subscribe" is_generic="false" instance_name="Signaling"></mutation>
+            <field name="COMPONENT_SELECTOR">Signaling</field>
+          </block>
+        </next>
+      </block>
+    </statement>
+  </block>
+  <block type="component_event" id="b68" x="0" y="898">
+    <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="SupabaseChannel" is_generic="false" instance_name="Signaling" event_name="StatusChanged"></mutation>
+    <field name="COMPONENT_SELECTOR">Signaling</field>
+    <statement name="DO">
+      <block type="controls_if" id="b67">
+        <value name="IF0">
+          <block type="logic_compare" id="b57">
+            <field name="OP">EQ</field>
+            <value name="A">
+              <block type="lexical_variable_get" id="b55">
+                <mutation xmlns="http://www.w3.org/1999/xhtml">
+                  <eventparam name="status"></eventparam>
+                </mutation>
+                <field name="VAR">status</field>
+              </block>
+            </value>
+            <value name="B">
+              <block type="text" id="b56">
+                <field name="TEXT">Subscribed</field>
+              </block>
+            </value>
+          </block>
+        </value>
+        <statement name="DO0">
+          <block type="component_method" id="b62">
+            <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="SupabaseChannel" method_name="Track" is_generic="false" instance_name="Signaling"></mutation>
+            <field name="COMPONENT_SELECTOR">Signaling</field>
+            <value name="ARG0">
+              <block type="dictionaries_create_with" id="b61">
+                <mutation xmlns="http://www.w3.org/1999/xhtml" items="1"></mutation>
+                <value name="ADD0">
+                  <block type="pair" id="b60">
+                    <value name="KEY">
+                      <block type="text" id="b59">
+                        <field name="TEXT">joined</field>
+                      </block>
+                    </value>
+                    <value name="VALUE">
+                      <block type="text" id="b58">
+                        <field name="TEXT">yes</field>
+                      </block>
+                    </value>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <next>
+              <block type="component_set_get" id="b66">
+                <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Label" set_or_get="set" property_name="Text" is_generic="false" instance_name="StatusLabel"></mutation>
+                <field name="COMPONENT_SELECTOR">StatusLabel</field>
+                <field name="PROP">Text</field>
+                <value name="VALUE">
+                  <block type="text_join" id="b65">
+                    <mutation xmlns="http://www.w3.org/1999/xhtml" items="2"></mutation>
+                    <value name="ADD0">
+                      <block type="text" id="b63">
+                        <field name="TEXT">Waiting for someone to join room </field>
+                      </block>
+                    </value>
+                    <value name="ADD1">
+                      <block type="component_set_get" id="b64">
+                        <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="TextBox" set_or_get="get" property_name="Text" is_generic="false" instance_name="RoomBox"></mutation>
+                        <field name="COMPONENT_SELECTOR">RoomBox</field>
+                        <field name="PROP">Text</field>
+                      </block>
+                    </value>
+                  </block>
+                </value>
+              </block>
+            </next>
+          </block>
+        </statement>
+      </block>
+    </statement>
+  </block>
+  <block type="component_event" id="b94" x="0" y="1159">
+    <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="SupabaseChannel" is_generic="false" instance_name="Signaling" event_name="PresenceChanged"></mutation>
+    <field name="COMPONENT_SELECTOR">Signaling</field>
+    <statement name="DO">
+      <block type="controls_forEach" id="b83">
+        <field name="VAR">peer</field>
+        <value name="LIST">
+          <block type="dictionaries_getters" id="b70">
+            <field name="OP">KEYS</field>
+            <value name="DICT">
+              <block type="component_set_get" id="b69">
+                <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="SupabaseChannel" set_or_get="get" property_name="PresenceState" is_generic="false" instance_name="Signaling"></mutation>
+                <field name="COMPONENT_SELECTOR">Signaling</field>
+                <field name="PROP">PresenceState</field>
+              </block>
+            </value>
+          </block>
+        </value>
+        <statement name="DO">
+          <block type="controls_if" id="b82">
+            <value name="IF0">
+              <block type="logic_operation" id="b76">
+                <mutation xmlns="http://www.w3.org/1999/xhtml" items="2"></mutation>
+                <field name="OP">AND</field>
+                <value name="A">
+                  <block type="logic_negate" id="b72">
+                    <value name="BOOL">
+                      <block type="lexical_variable_get" id="b71">
+                        <field name="VAR">global offered</field>
+                      </block>
+                    </value>
+                  </block>
+                </value>
+                <value name="B">
+                  <block type="text_compare" id="b75">
+                    <field name="OP">LT</field>
+                    <value name="TEXT1">
+                      <block type="lexical_variable_get" id="b73">
+                        <field name="VAR">global me</field>
+                      </block>
+                    </value>
+                    <value name="TEXT2">
+                      <block type="lexical_variable_get" id="b74">
+                        <field name="VAR">peer</field>
+                      </block>
+                    </value>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <statement name="DO0">
+              <block type="lexical_variable_set" id="b78">
+                <field name="VAR">global offered</field>
+                <value name="VALUE">
+                  <block type="logic_boolean" id="b77">
+                    <field name="BOOL">TRUE</field>
+                  </block>
+                </value>
+                <next>
+                  <block type="component_set_get" id="b80">
+                    <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Label" set_or_get="set" property_name="Text" is_generic="false" instance_name="StatusLabel"></mutation>
+                    <field name="COMPONENT_SELECTOR">StatusLabel</field>
+                    <field name="PROP">Text</field>
+                    <value name="VALUE">
+                      <block type="text" id="b79">
+                        <field name="TEXT">Calling...</field>
+                      </block>
+                    </value>
+                    <next>
+                      <block type="component_method" id="b81">
+                        <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="PeerConnection" method_name="CreateOffer" is_generic="false" instance_name="Call"></mutation>
+                        <field name="COMPONENT_SELECTOR">Call</field>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </statement>
+          </block>
+        </statement>
+        <next>
+          <block type="controls_forEach" id="b93">
+            <field name="VAR">peer</field>
+            <value name="LIST">
+              <block type="dictionaries_getters" id="b85">
+                <field name="OP">KEYS</field>
+                <value name="DICT">
+                  <block type="lexical_variable_get" id="b84">
+                    <mutation xmlns="http://www.w3.org/1999/xhtml">
+                      <eventparam name="leaves"></eventparam>
+                    </mutation>
+                    <field name="VAR">leaves</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <statement name="DO">
+              <block type="controls_if" id="b92">
+                <value name="IF0">
+                  <block type="logic_negate" id="b89">
+                    <value name="BOOL">
+                      <block type="logic_compare" id="b88">
+                        <field name="OP">EQ</field>
+                        <value name="A">
+                          <block type="lexical_variable_get" id="b86">
+                            <field name="VAR">peer</field>
+                          </block>
+                        </value>
+                        <value name="B">
+                          <block type="lexical_variable_get" id="b87">
+                            <field name="VAR">global me</field>
+                          </block>
+                        </value>
+                      </block>
+                    </value>
+                  </block>
+                </value>
+                <statement name="DO0">
+                  <block type="component_method" id="b1">
+                    <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="PeerConnection" method_name="Close" is_generic="false" instance_name="Call"></mutation>
+                    <field name="COMPONENT_SELECTOR">Call</field>
+                    <next>
+                      <block type="lexical_variable_set" id="b3">
+                        <field name="VAR">global offered</field>
+                        <value name="VALUE">
+                          <block type="logic_boolean" id="b2">
+                            <field name="BOOL">FALSE</field>
+                          </block>
+                        </value>
+                        <next>
+                          <block type="component_set_get" id="b91">
+                            <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Label" set_or_get="set" property_name="Text" is_generic="false" instance_name="StatusLabel"></mutation>
+                            <field name="COMPONENT_SELECTOR">StatusLabel</field>
+                            <field name="PROP">Text</field>
+                            <value name="VALUE">
+                              <block type="text" id="b90">
+                                <field name="TEXT">The other person left. Waiting for someone to join.</field>
+                              </block>
+                            </value>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </statement>
+              </block>
+            </statement>
+          </block>
+        </next>
+      </block>
+    </statement>
+  </block>
+  <block type="component_event" id="b107" x="0" y="1605">
+    <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="PeerConnection" is_generic="false" instance_name="Call" event_name="LocalDescriptionSet"></mutation>
+    <field name="COMPONENT_SELECTOR">Call</field>
+    <statement name="DO">
+      <block type="component_method" id="b106">
+        <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="SupabaseChannel" method_name="Broadcast" is_generic="false" instance_name="Signaling"></mutation>
+        <field name="COMPONENT_SELECTOR">Signaling</field>
+        <value name="ARG0">
+          <block type="text" id="b97">
+            <field name="TEXT">signal</field>
+          </block>
+        </value>
+        <value name="ARG1">
+          <block type="dictionaries_create_with" id="b105">
+            <mutation xmlns="http://www.w3.org/1999/xhtml" items="3"></mutation>
+            <value name="ADD0">
+              <block type="pair" id="b100">
+                <value name="KEY">
+                  <block type="text" id="b99">
+                    <field name="TEXT">from</field>
+                  </block>
+                </value>
+                <value name="VALUE">
+                  <block type="lexical_variable_get" id="b98">
+                    <field name="VAR">global me</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <value name="ADD1">
+              <block type="pair" id="b102">
+                <value name="KEY">
+                  <block type="text" id="b101">
+                    <field name="TEXT">type</field>
+                  </block>
+                </value>
+                <value name="VALUE">
+                  <block type="lexical_variable_get" id="b95">
+                    <mutation xmlns="http://www.w3.org/1999/xhtml">
+                      <eventparam name="type"></eventparam>
+                    </mutation>
+                    <field name="VAR">type</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <value name="ADD2">
+              <block type="pair" id="b104">
+                <value name="KEY">
+                  <block type="text" id="b103">
+                    <field name="TEXT">sdp</field>
+                  </block>
+                </value>
+                <value name="VALUE">
+                  <block type="lexical_variable_get" id="b96">
+                    <mutation xmlns="http://www.w3.org/1999/xhtml">
+                      <eventparam name="sdp"></eventparam>
+                    </mutation>
+                    <field name="VAR">sdp</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+          </block>
+        </value>
+      </block>
+    </statement>
+  </block>
+  <block type="component_event" id="b123" x="0" y="1864">
+    <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="PeerConnection" is_generic="false" instance_name="Call" event_name="IceCandidateFound"></mutation>
+    <field name="COMPONENT_SELECTOR">Call</field>
+    <statement name="DO">
+      <block type="component_method" id="b122">
+        <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="SupabaseChannel" method_name="Broadcast" is_generic="false" instance_name="Signaling"></mutation>
+        <field name="COMPONENT_SELECTOR">Signaling</field>
+        <value name="ARG0">
+          <block type="text" id="b111">
+            <field name="TEXT">signal</field>
+          </block>
+        </value>
+        <value name="ARG1">
+          <block type="dictionaries_create_with" id="b121">
+            <mutation xmlns="http://www.w3.org/1999/xhtml" items="4"></mutation>
+            <value name="ADD0">
+              <block type="pair" id="b114">
+                <value name="KEY">
+                  <block type="text" id="b113">
+                    <field name="TEXT">from</field>
+                  </block>
+                </value>
+                <value name="VALUE">
+                  <block type="lexical_variable_get" id="b112">
+                    <field name="VAR">global me</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <value name="ADD1">
+              <block type="pair" id="b116">
+                <value name="KEY">
+                  <block type="text" id="b115">
+                    <field name="TEXT">sdpMid</field>
+                  </block>
+                </value>
+                <value name="VALUE">
+                  <block type="lexical_variable_get" id="b108">
+                    <mutation xmlns="http://www.w3.org/1999/xhtml">
+                      <eventparam name="sdpMid"></eventparam>
+                    </mutation>
+                    <field name="VAR">sdpMid</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <value name="ADD2">
+              <block type="pair" id="b118">
+                <value name="KEY">
+                  <block type="text" id="b117">
+                    <field name="TEXT">sdpMLineIndex</field>
+                  </block>
+                </value>
+                <value name="VALUE">
+                  <block type="lexical_variable_get" id="b109">
+                    <mutation xmlns="http://www.w3.org/1999/xhtml">
+                      <eventparam name="sdpMLineIndex"></eventparam>
+                    </mutation>
+                    <field name="VAR">sdpMLineIndex</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <value name="ADD3">
+              <block type="pair" id="b120">
+                <value name="KEY">
+                  <block type="text" id="b119">
+                    <field name="TEXT">candidate</field>
+                  </block>
+                </value>
+                <value name="VALUE">
+                  <block type="lexical_variable_get" id="b110">
+                    <mutation xmlns="http://www.w3.org/1999/xhtml">
+                      <eventparam name="candidate"></eventparam>
+                    </mutation>
+                    <field name="VAR">candidate</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+          </block>
+        </value>
+      </block>
+    </statement>
+  </block>
+  <block type="component_event" id="b171" x="0" y="2161">
+    <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="SupabaseChannel" is_generic="false" instance_name="Signaling" event_name="BroadcastReceived"></mutation>
+    <field name="COMPONENT_SELECTOR">Signaling</field>
+    <statement name="DO">
+      <block type="controls_if" id="b170">
+        <mutation xmlns="http://www.w3.org/1999/xhtml" elseif="2"></mutation>
+        <value name="IF0">
+          <block type="dictionaries_is_key_in" id="b126">
+            <value name="KEY">
+              <block type="text" id="b125">
+                <field name="TEXT">sdp</field>
+              </block>
+            </value>
+            <value name="DICT">
+              <block type="lexical_variable_get" id="b124">
+                <mutation xmlns="http://www.w3.org/1999/xhtml">
+                  <eventparam name="payload"></eventparam>
+                </mutation>
+                <field name="VAR">payload</field>
+              </block>
+            </value>
+          </block>
+        </value>
+        <statement name="DO0">
+          <block type="component_method" id="b135">
+            <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="PeerConnection" method_name="SetRemoteDescription" is_generic="false" instance_name="Call"></mutation>
+            <field name="COMPONENT_SELECTOR">Call</field>
+            <value name="ARG0">
+              <block type="dictionaries_lookup" id="b130">
+                <value name="KEY">
+                  <block type="text" id="b128">
+                    <field name="TEXT">type</field>
+                  </block>
+                </value>
+                <value name="DICT">
+                  <block type="lexical_variable_get" id="b127">
+                    <mutation xmlns="http://www.w3.org/1999/xhtml">
+                      <eventparam name="payload"></eventparam>
+                    </mutation>
+                    <field name="VAR">payload</field>
+                  </block>
+                </value>
+                <value name="NOTFOUND">
+                  <block type="text" id="b129">
+                    <field name="TEXT"></field>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <value name="ARG1">
+              <block type="dictionaries_lookup" id="b134">
+                <value name="KEY">
+                  <block type="text" id="b132">
+                    <field name="TEXT">sdp</field>
+                  </block>
+                </value>
+                <value name="DICT">
+                  <block type="lexical_variable_get" id="b131">
+                    <mutation xmlns="http://www.w3.org/1999/xhtml">
+                      <eventparam name="payload"></eventparam>
+                    </mutation>
+                    <field name="VAR">payload</field>
+                  </block>
+                </value>
+                <value name="NOTFOUND">
+                  <block type="text" id="b133">
+                    <field name="TEXT"></field>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <next>
+              <block type="controls_if" id="b145">
+                <value name="IF0">
+                  <block type="logic_compare" id="b141">
+                    <field name="OP">EQ</field>
+                    <value name="A">
+                      <block type="dictionaries_lookup" id="b139">
+                        <value name="KEY">
+                          <block type="text" id="b137">
+                            <field name="TEXT">type</field>
+                          </block>
+                        </value>
+                        <value name="DICT">
+                          <block type="lexical_variable_get" id="b136">
+                            <mutation xmlns="http://www.w3.org/1999/xhtml">
+                              <eventparam name="payload"></eventparam>
+                            </mutation>
+                            <field name="VAR">payload</field>
+                          </block>
+                        </value>
+                        <value name="NOTFOUND">
+                          <block type="text" id="b138">
+                            <field name="TEXT"></field>
+                          </block>
+                        </value>
+                      </block>
+                    </value>
+                    <value name="B">
+                      <block type="text" id="b140">
+                        <field name="TEXT">offer</field>
+                      </block>
+                    </value>
+                  </block>
+                </value>
+                <statement name="DO0">
+                  <block type="lexical_variable_set" id="b143">
+                    <field name="VAR">global offered</field>
+                    <value name="VALUE">
+                      <block type="logic_boolean" id="b142">
+                        <field name="BOOL">TRUE</field>
+                      </block>
+                    </value>
+                    <next>
+                      <block type="component_method" id="b144">
+                        <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="PeerConnection" method_name="CreateAnswer" is_generic="false" instance_name="Call"></mutation>
+                        <field name="COMPONENT_SELECTOR">Call</field>
+                      </block>
+                    </next>
+                  </block>
+                </statement>
+              </block>
+            </next>
+          </block>
+        </statement>
+        <value name="IF1">
+          <block type="dictionaries_is_key_in" id="b148">
+            <value name="KEY">
+              <block type="text" id="b147">
+                <field name="TEXT">candidate</field>
+              </block>
+            </value>
+            <value name="DICT">
+              <block type="lexical_variable_get" id="b146">
+                <mutation xmlns="http://www.w3.org/1999/xhtml">
+                  <eventparam name="payload"></eventparam>
+                </mutation>
+                <field name="VAR">payload</field>
+              </block>
+            </value>
+          </block>
+        </value>
+        <statement name="DO1">
+          <block type="component_method" id="b161">
+            <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="PeerConnection" method_name="AddIceCandidate" is_generic="false" instance_name="Call"></mutation>
+            <field name="COMPONENT_SELECTOR">Call</field>
+            <value name="ARG0">
+              <block type="dictionaries_lookup" id="b152">
+                <value name="KEY">
+                  <block type="text" id="b150">
+                    <field name="TEXT">sdpMid</field>
+                  </block>
+                </value>
+                <value name="DICT">
+                  <block type="lexical_variable_get" id="b149">
+                    <mutation xmlns="http://www.w3.org/1999/xhtml">
+                      <eventparam name="payload"></eventparam>
+                    </mutation>
+                    <field name="VAR">payload</field>
+                  </block>
+                </value>
+                <value name="NOTFOUND">
+                  <block type="text" id="b151">
+                    <field name="TEXT"></field>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <value name="ARG1">
+              <block type="dictionaries_lookup" id="b156">
+                <value name="KEY">
+                  <block type="text" id="b155">
+                    <field name="TEXT">sdpMLineIndex</field>
+                  </block>
+                </value>
+                <value name="DICT">
+                  <block type="lexical_variable_get" id="b153">
+                    <mutation xmlns="http://www.w3.org/1999/xhtml">
+                      <eventparam name="payload"></eventparam>
+                    </mutation>
+                    <field name="VAR">payload</field>
+                  </block>
+                </value>
+                <value name="NOTFOUND">
+                  <block type="math_number" id="b154">
+                    <field name="NUM">0</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <value name="ARG2">
+              <block type="dictionaries_lookup" id="b160">
+                <value name="KEY">
+                  <block type="text" id="b158">
+                    <field name="TEXT">candidate</field>
+                  </block>
+                </value>
+                <value name="DICT">
+                  <block type="lexical_variable_get" id="b157">
+                    <mutation xmlns="http://www.w3.org/1999/xhtml">
+                      <eventparam name="payload"></eventparam>
+                    </mutation>
+                    <field name="VAR">payload</field>
+                  </block>
+                </value>
+                <value name="NOTFOUND">
+                  <block type="text" id="b159">
+                    <field name="TEXT"></field>
+                  </block>
+                </value>
+              </block>
+            </value>
+          </block>
+        </statement>
+        <value name="IF2">
+          <block type="logic_compare" id="b167">
+            <field name="OP">EQ</field>
+            <value name="A">
+              <block type="dictionaries_lookup" id="b165">
+                <value name="KEY">
+                  <block type="text" id="b163">
+                    <field name="TEXT">type</field>
+                  </block>
+                </value>
+                <value name="DICT">
+                  <block type="lexical_variable_get" id="b162">
+                    <mutation xmlns="http://www.w3.org/1999/xhtml">
+                      <eventparam name="payload"></eventparam>
+                    </mutation>
+                    <field name="VAR">payload</field>
+                  </block>
+                </value>
+                <value name="NOTFOUND">
+                  <block type="text" id="b164">
+                    <field name="TEXT"></field>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <value name="B">
+              <block type="text" id="b166">
+                <field name="TEXT">bye</field>
+              </block>
+            </value>
+          </block>
+        </value>
+        <statement name="DO2">
+          <block type="component_method" id="vOO$m5F1;y3(Wr%wp?/M">
+            <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="PeerConnection" method_name="Close" is_generic="false" instance_name="Call"></mutation>
+            <field name="COMPONENT_SELECTOR">Call</field>
+            <next>
+              <block type="lexical_variable_set" id="N)q;jrXE+8l=Q(O!,KT}">
+                <field name="VAR">global offered</field>
+                <value name="VALUE">
+                  <block type="logic_boolean" id="VW@U/f)/xT;;kh:BbXcX">
+                    <field name="BOOL">FALSE</field>
+                  </block>
+                </value>
+                <next>
+                  <block type="component_set_get" id="b169">
+                    <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Label" set_or_get="set" property_name="Text" is_generic="false" instance_name="StatusLabel"></mutation>
+                    <field name="COMPONENT_SELECTOR">StatusLabel</field>
+                    <field name="PROP">Text</field>
+                    <value name="VALUE">
+                      <block type="text" id="b168">
+                        <field name="TEXT">Call ended by the other person.</field>
+                      </block>
+                    </value>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </statement>
+      </block>
+    </statement>
+  </block>
+  <block type="component_event" id="b176" x="0" y="3168">
+    <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="PeerConnection" is_generic="false" instance_name="Call" event_name="ConnectionStateChanged"></mutation>
+    <field name="COMPONENT_SELECTOR">Call</field>
+    <statement name="DO">
+      <block type="component_set_get" id="b175">
+        <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Label" set_or_get="set" property_name="Text" is_generic="false" instance_name="StatusLabel"></mutation>
+        <field name="COMPONENT_SELECTOR">StatusLabel</field>
+        <field name="PROP">Text</field>
+        <value name="VALUE">
+          <block type="text_join" id="b174">
+            <mutation xmlns="http://www.w3.org/1999/xhtml" items="2"></mutation>
+            <value name="ADD0">
+              <block type="text" id="b172">
+                <field name="TEXT">Call: </field>
+              </block>
+            </value>
+            <value name="ADD1">
+              <block type="lexical_variable_get" id="b173">
+                <mutation xmlns="http://www.w3.org/1999/xhtml">
+                  <eventparam name="state"></eventparam>
+                </mutation>
+                <field name="VAR">state</field>
+              </block>
+            </value>
+          </block>
+        </value>
+      </block>
+    </statement>
+  </block>
+  <block type="component_event" id="b183" x="0" y="3313">
+    <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="PeerConnection" is_generic="false" instance_name="Call" event_name="Error"></mutation>
+    <field name="COMPONENT_SELECTOR">Call</field>
+    <statement name="DO">
+      <block type="component_set_get" id="b182">
+        <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Label" set_or_get="set" property_name="Text" is_generic="false" instance_name="StatusLabel"></mutation>
+        <field name="COMPONENT_SELECTOR">StatusLabel</field>
+        <field name="PROP">Text</field>
+        <value name="VALUE">
+          <block type="text_join" id="b181">
+            <mutation xmlns="http://www.w3.org/1999/xhtml" items="4"></mutation>
+            <value name="ADD0">
+              <block type="text" id="b177">
+                <field name="TEXT">Call error in </field>
+              </block>
+            </value>
+            <value name="ADD1">
+              <block type="lexical_variable_get" id="b178">
+                <mutation xmlns="http://www.w3.org/1999/xhtml">
+                  <eventparam name="operation"></eventparam>
+                </mutation>
+                <field name="VAR">operation</field>
+              </block>
+            </value>
+            <value name="ADD2">
+              <block type="text" id="b179">
+                <field name="TEXT">: </field>
+              </block>
+            </value>
+            <value name="ADD3">
+              <block type="lexical_variable_get" id="b180">
+                <mutation xmlns="http://www.w3.org/1999/xhtml">
+                  <eventparam name="message"></eventparam>
+                </mutation>
+                <field name="VAR">message</field>
+              </block>
+            </value>
+          </block>
+        </value>
+      </block>
+    </statement>
+  </block>
+  <block type="component_event" id="b190" x="0" y="3512">
+    <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="SupabaseChannel" is_generic="false" instance_name="Signaling" event_name="Error"></mutation>
+    <field name="COMPONENT_SELECTOR">Signaling</field>
+    <statement name="DO">
+      <block type="component_set_get" id="b189">
+        <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Label" set_or_get="set" property_name="Text" is_generic="false" instance_name="StatusLabel"></mutation>
+        <field name="COMPONENT_SELECTOR">StatusLabel</field>
+        <field name="PROP">Text</field>
+        <value name="VALUE">
+          <block type="text_join" id="b188">
+            <mutation xmlns="http://www.w3.org/1999/xhtml" items="4"></mutation>
+            <value name="ADD0">
+              <block type="text" id="b184">
+                <field name="TEXT">Signaling error in </field>
+              </block>
+            </value>
+            <value name="ADD1">
+              <block type="lexical_variable_get" id="b185">
+                <mutation xmlns="http://www.w3.org/1999/xhtml">
+                  <eventparam name="operation"></eventparam>
+                </mutation>
+                <field name="VAR">operation</field>
+              </block>
+            </value>
+            <value name="ADD2">
+              <block type="text" id="b186">
+                <field name="TEXT">: </field>
+              </block>
+            </value>
+            <value name="ADD3">
+              <block type="lexical_variable_get" id="b187">
+                <mutation xmlns="http://www.w3.org/1999/xhtml">
+                  <eventparam name="message"></eventparam>
+                </mutation>
+                <field name="VAR">message</field>
+              </block>
+            </value>
+          </block>
+        </value>
+      </block>
+    </statement>
+  </block>
+  <block type="component_event" id="b197" x="0" y="3711">
+    <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Supabase" is_generic="false" instance_name="Supabase1" event_name="Error"></mutation>
+    <field name="COMPONENT_SELECTOR">Supabase1</field>
+    <statement name="DO">
+      <block type="component_set_get" id="b196">
+        <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Label" set_or_get="set" property_name="Text" is_generic="false" instance_name="StatusLabel"></mutation>
+        <field name="COMPONENT_SELECTOR">StatusLabel</field>
+        <field name="PROP">Text</field>
+        <value name="VALUE">
+          <block type="text_join" id="b195">
+            <mutation xmlns="http://www.w3.org/1999/xhtml" items="4"></mutation>
+            <value name="ADD0">
+              <block type="text" id="b191">
+                <field name="TEXT">Supabase error in </field>
+              </block>
+            </value>
+            <value name="ADD1">
+              <block type="lexical_variable_get" id="b192">
+                <mutation xmlns="http://www.w3.org/1999/xhtml">
+                  <eventparam name="operation"></eventparam>
+                </mutation>
+                <field name="VAR">operation</field>
+              </block>
+            </value>
+            <value name="ADD2">
+              <block type="text" id="b193">
+                <field name="TEXT">: </field>
+              </block>
+            </value>
+            <value name="ADD3">
+              <block type="lexical_variable_get" id="b194">
+                <mutation xmlns="http://www.w3.org/1999/xhtml">
+                  <eventparam name="message"></eventparam>
+                </mutation>
+                <field name="VAR">message</field>
+              </block>
+            </value>
+          </block>
+        </value>
+      </block>
+    </statement>
+  </block>
+  <block type="component_event" id="b200" x="0" y="3910">
+    <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Form" is_generic="false" instance_name="Screen1" event_name="PermissionDenied"></mutation>
+    <field name="COMPONENT_SELECTOR">Screen1</field>
+    <statement name="DO">
+      <block type="component_set_get" id="b199">
+        <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Label" set_or_get="set" property_name="Text" is_generic="false" instance_name="StatusLabel"></mutation>
+        <field name="COMPONENT_SELECTOR">StatusLabel</field>
+        <field name="PROP">Text</field>
+        <value name="VALUE">
+          <block type="text" id="b198">
+            <field name="TEXT">The call needs the camera and microphone.</field>
+          </block>
+        </value>
+      </block>
+    </statement>
+  </block>
+  <block type="component_event" id="b212" x="0" y="4028">
+    <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Button" is_generic="false" instance_name="HangUpButton" event_name="Click"></mutation>
+    <field name="COMPONENT_SELECTOR">HangUpButton</field>
+    <statement name="DO">
+      <block type="component_method" id="b209">
+        <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="SupabaseChannel" method_name="Broadcast" is_generic="false" instance_name="Signaling"></mutation>
+        <field name="COMPONENT_SELECTOR">Signaling</field>
+        <value name="ARG0">
+          <block type="text" id="b202">
+            <field name="TEXT">signal</field>
+          </block>
+        </value>
+        <value name="ARG1">
+          <block type="dictionaries_create_with" id="b208">
+            <mutation xmlns="http://www.w3.org/1999/xhtml" items="2"></mutation>
+            <value name="ADD0">
+              <block type="pair" id="b205">
+                <value name="KEY">
+                  <block type="text" id="b204">
+                    <field name="TEXT">from</field>
+                  </block>
+                </value>
+                <value name="VALUE">
+                  <block type="lexical_variable_get" id="b203">
+                    <field name="VAR">global me</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <value name="ADD1">
+              <block type="pair" id="b207">
+                <value name="KEY">
+                  <block type="text" id="b206">
+                    <field name="TEXT">type</field>
+                  </block>
+                </value>
+                <value name="VALUE">
+                  <block type="text" id="b201">
+                    <field name="TEXT">bye</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+          </block>
+        </value>
+        <next>
+          <block type="component_method" id="b4">
+            <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="PeerConnection" method_name="Close" is_generic="false" instance_name="Call"></mutation>
+            <field name="COMPONENT_SELECTOR">Call</field>
+            <next>
+              <block type="component_method" id="b5">
+                <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="PeerConnection" method_name="StopLocalMedia" is_generic="false" instance_name="Call"></mutation>
+                <field name="COMPONENT_SELECTOR">Call</field>
+                <next>
+                  <block type="component_method" id="b6">
+                    <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="SupabaseChannel" method_name="Untrack" is_generic="false" instance_name="Signaling"></mutation>
+                    <field name="COMPONENT_SELECTOR">Signaling</field>
+                    <next>
+                      <block type="component_method" id="b7">
+                        <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="SupabaseChannel" method_name="Unsubscribe" is_generic="false" instance_name="Signaling"></mutation>
+                        <field name="COMPONENT_SELECTOR">Signaling</field>
+                        <next>
+                          <block type="lexical_variable_set" id="b9">
+                            <field name="VAR">global offered</field>
+                            <value name="VALUE">
+                              <block type="logic_boolean" id="b8">
+                                <field name="BOOL">FALSE</field>
+                              </block>
+                            </value>
+                            <next>
+                              <block type="component_set_get" id="b11">
+                                <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Button" set_or_get="set" property_name="Enabled" is_generic="false" instance_name="JoinButton"></mutation>
+                                <field name="COMPONENT_SELECTOR">JoinButton</field>
+                                <field name="PROP">Enabled</field>
+                                <value name="VALUE">
+                                  <block type="logic_boolean" id="b10">
+                                    <field name="BOOL">TRUE</field>
+                                  </block>
+                                </value>
+                                <next>
+                                  <block type="component_set_get" id="b13">
+                                    <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Button" set_or_get="set" property_name="Enabled" is_generic="false" instance_name="HangUpButton"></mutation>
+                                    <field name="COMPONENT_SELECTOR">HangUpButton</field>
+                                    <field name="PROP">Enabled</field>
+                                    <value name="VALUE">
+                                      <block type="logic_boolean" id="b12">
+                                        <field name="BOOL">FALSE</field>
+                                      </block>
+                                    </value>
+                                    <next>
+                                      <block type="component_set_get" id="b211">
+                                        <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Label" set_or_get="set" property_name="Text" is_generic="false" instance_name="StatusLabel"></mutation>
+                                        <field name="COMPONENT_SELECTOR">StatusLabel</field>
+                                        <field name="PROP">Text</field>
+                                        <value name="VALUE">
+                                          <block type="text" id="b210">
+                                            <field name="TEXT">Call ended.</field>
+                                          </block>
+                                        </value>
+                                      </block>
+                                    </next>
+                                  </block>
+                                </next>
+                              </block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </statement>
+  </block>
+  <block type="component_event" id="b222" x="0" y="4438">
+    <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Button" is_generic="false" instance_name="MuteButton" event_name="Click"></mutation>
+    <field name="COMPONENT_SELECTOR">MuteButton</field>
+    <statement name="DO">
+      <block type="component_set_get" id="b215">
+        <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="PeerConnection" set_or_get="set" property_name="MicrophoneEnabled" is_generic="false" instance_name="Call"></mutation>
+        <field name="COMPONENT_SELECTOR">Call</field>
+        <field name="PROP">MicrophoneEnabled</field>
+        <value name="VALUE">
+          <block type="logic_negate" id="b214">
+            <value name="BOOL">
+              <block type="component_set_get" id="b213">
+                <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="PeerConnection" set_or_get="get" property_name="MicrophoneEnabled" is_generic="false" instance_name="Call"></mutation>
+                <field name="COMPONENT_SELECTOR">Call</field>
+                <field name="PROP">MicrophoneEnabled</field>
+              </block>
+            </value>
+          </block>
+        </value>
+        <next>
+          <block type="controls_if" id="b221">
+            <mutation xmlns="http://www.w3.org/1999/xhtml" else="1"></mutation>
+            <value name="IF0">
+              <block type="component_set_get" id="b216">
+                <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="PeerConnection" set_or_get="get" property_name="MicrophoneEnabled" is_generic="false" instance_name="Call"></mutation>
+                <field name="COMPONENT_SELECTOR">Call</field>
+                <field name="PROP">MicrophoneEnabled</field>
+              </block>
+            </value>
+            <statement name="DO0">
+              <block type="component_set_get" id="b218">
+                <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Button" set_or_get="set" property_name="Text" is_generic="false" instance_name="MuteButton"></mutation>
+                <field name="COMPONENT_SELECTOR">MuteButton</field>
+                <field name="PROP">Text</field>
+                <value name="VALUE">
+                  <block type="text" id="b217">
+                    <field name="TEXT">Mute</field>
+                  </block>
+                </value>
+              </block>
+            </statement>
+            <statement name="ELSE">
+              <block type="component_set_get" id="b220">
+                <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Button" set_or_get="set" property_name="Text" is_generic="false" instance_name="MuteButton"></mutation>
+                <field name="COMPONENT_SELECTOR">MuteButton</field>
+                <field name="PROP">Text</field>
+                <value name="VALUE">
+                  <block type="text" id="b219">
+                    <field name="TEXT">Unmute</field>
+                  </block>
+                </value>
+              </block>
+            </statement>
+          </block>
+        </next>
+      </block>
+    </statement>
+  </block>
+  <block type="component_event" id="b232" x="0" y="4636">
+    <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Button" is_generic="false" instance_name="CameraButton" event_name="Click"></mutation>
+    <field name="COMPONENT_SELECTOR">CameraButton</field>
+    <statement name="DO">
+      <block type="component_set_get" id="b225">
+        <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="PeerConnection" set_or_get="set" property_name="CameraEnabled" is_generic="false" instance_name="Call"></mutation>
+        <field name="COMPONENT_SELECTOR">Call</field>
+        <field name="PROP">CameraEnabled</field>
+        <value name="VALUE">
+          <block type="logic_negate" id="b224">
+            <value name="BOOL">
+              <block type="component_set_get" id="b223">
+                <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="PeerConnection" set_or_get="get" property_name="CameraEnabled" is_generic="false" instance_name="Call"></mutation>
+                <field name="COMPONENT_SELECTOR">Call</field>
+                <field name="PROP">CameraEnabled</field>
+              </block>
+            </value>
+          </block>
+        </value>
+        <next>
+          <block type="controls_if" id="b231">
+            <mutation xmlns="http://www.w3.org/1999/xhtml" else="1"></mutation>
+            <value name="IF0">
+              <block type="component_set_get" id="b226">
+                <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="PeerConnection" set_or_get="get" property_name="CameraEnabled" is_generic="false" instance_name="Call"></mutation>
+                <field name="COMPONENT_SELECTOR">Call</field>
+                <field name="PROP">CameraEnabled</field>
+              </block>
+            </value>
+            <statement name="DO0">
+              <block type="component_set_get" id="b228">
+                <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Button" set_or_get="set" property_name="Text" is_generic="false" instance_name="CameraButton"></mutation>
+                <field name="COMPONENT_SELECTOR">CameraButton</field>
+                <field name="PROP">Text</field>
+                <value name="VALUE">
+                  <block type="text" id="b227">
+                    <field name="TEXT">Camera off</field>
+                  </block>
+                </value>
+              </block>
+            </statement>
+            <statement name="ELSE">
+              <block type="component_set_get" id="b230">
+                <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Button" set_or_get="set" property_name="Text" is_generic="false" instance_name="CameraButton"></mutation>
+                <field name="COMPONENT_SELECTOR">CameraButton</field>
+                <field name="PROP">Text</field>
+                <value name="VALUE">
+                  <block type="text" id="b229">
+                    <field name="TEXT">Camera on</field>
+                  </block>
+                </value>
+              </block>
+            </statement>
+          </block>
+        </next>
+      </block>
+    </statement>
+  </block>
+  <block type="component_event" id="b234" x="0" y="4834">
+    <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Button" is_generic="false" instance_name="SwitchButton" event_name="Click"></mutation>
+    <field name="COMPONENT_SELECTOR">SwitchButton</field>
+    <statement name="DO">
+      <block type="component_method" id="b233">
+        <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="PeerConnection" method_name="SwitchCamera" is_generic="false" instance_name="Call"></mutation>
+        <field name="COMPONENT_SELECTOR">Call</field>
+      </block>
+    </statement>
+  </block>
+  <block type="component_event" id="b244" x="0" y="4925">
+    <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Button" is_generic="false" instance_name="SpeakerButton" event_name="Click"></mutation>
+    <field name="COMPONENT_SELECTOR">SpeakerButton</field>
+    <statement name="DO">
+      <block type="component_set_get" id="b237">
+        <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="PeerConnection" set_or_get="set" property_name="Speakerphone" is_generic="false" instance_name="Call"></mutation>
+        <field name="COMPONENT_SELECTOR">Call</field>
+        <field name="PROP">Speakerphone</field>
+        <value name="VALUE">
+          <block type="logic_negate" id="b236">
+            <value name="BOOL">
+              <block type="component_set_get" id="b235">
+                <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="PeerConnection" set_or_get="get" property_name="Speakerphone" is_generic="false" instance_name="Call"></mutation>
+                <field name="COMPONENT_SELECTOR">Call</field>
+                <field name="PROP">Speakerphone</field>
+              </block>
+            </value>
+          </block>
+        </value>
+        <next>
+          <block type="controls_if" id="b243">
+            <mutation xmlns="http://www.w3.org/1999/xhtml" else="1"></mutation>
+            <value name="IF0">
+              <block type="component_set_get" id="b238">
+                <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="PeerConnection" set_or_get="get" property_name="Speakerphone" is_generic="false" instance_name="Call"></mutation>
+                <field name="COMPONENT_SELECTOR">Call</field>
+                <field name="PROP">Speakerphone</field>
+              </block>
+            </value>
+            <statement name="DO0">
+              <block type="component_set_get" id="b240">
+                <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Button" set_or_get="set" property_name="Text" is_generic="false" instance_name="SpeakerButton"></mutation>
+                <field name="COMPONENT_SELECTOR">SpeakerButton</field>
+                <field name="PROP">Text</field>
+                <value name="VALUE">
+                  <block type="text" id="b239">
+                    <field name="TEXT">Earpiece</field>
+                  </block>
+                </value>
+              </block>
+            </statement>
+            <statement name="ELSE">
+              <block type="component_set_get" id="b242">
+                <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Button" set_or_get="set" property_name="Text" is_generic="false" instance_name="SpeakerButton"></mutation>
+                <field name="COMPONENT_SELECTOR">SpeakerButton</field>
+                <field name="PROP">Text</field>
+                <value name="VALUE">
+                  <block type="text" id="b241">
+                    <field name="TEXT">Speaker</field>
+                  </block>
+                </value>
+              </block>
+            </statement>
+          </block>
+        </next>
+      </block>
+    </statement>
+  </block>
+  <yacodeblocks xmlns="https://appinventor.mit.edu/ns/project/" ya-version="237" language-version="39"></yacodeblocks>
+</xml>

@@ -1,251 +1,158 @@
-# PeerConnection
+# Blocks
 
-<p>A WebRTC call with another device: audio, video, and data channels for text messages. Send the descriptions and ICE candidates it produces to the other device through any channel, such as Supabase broadcast, and pass theirs back in.</p>
+Every block of the WebRTC extension. A WebRTC call with another device: audio, video, and data channels for text messages. Send the descriptions and ICE candidates it produces to the other device through any channel, such as Supabase broadcast, and pass theirs back in. Each image contains its block, so you can drag it straight into your workspace.
 
-## Events
+- [Camera and microphone](#camera-and-microphone)
+- [Video on screen](#video-on-screen)
+- [Connecting](#connecting)
+- [Data channels](#data-channels)
+- [Errors](#errors)
+- [Dropdowns](#dropdowns)
 
-### LocalMediaStarted()
+## Camera and microphone
 
-The microphone and camera asked for in StartLocalMedia are ready.
+![StartLocalMedia](images/blocks/PeerConnection1-StartLocalMedia.png)
 
-### RemoteTrackAdded(kind)
+**StartLocalMedia:** Starts the microphone, the camera or both, asking for permission first. LocalMediaStarted fires when they're ready: create the offer or answer after it so the other device receives them. If the user refuses, Screen.PermissionDenied fires.
 
-The other device's audio or video arrived. Kind is audio or video. Audio plays by itself; show video with ShowRemoteVideo.
+![StopLocalMedia](images/blocks/PeerConnection1-StopLocalMedia.png)
 
-| Parameter | Type |
-|---|---|
-| kind | text |
+**StopLocalMedia:** Stops the camera and microphone.
 
-### CameraSwitched(front)
+![LocalMediaStarted](images/blocks/PeerConnection1-LocalMediaStarted.png)
 
-The camera switched. Front is true when the front camera is now in use.
+**LocalMediaStarted:** The microphone and camera asked for in StartLocalMedia are ready.
 
-| Parameter | Type |
-|---|---|
-| front | boolean |
+![SwitchCamera](images/blocks/PeerConnection1-SwitchCamera.png)
 
-### LocalDescriptionSet(type, sdp)
+**SwitchCamera:** Switches between the front and back cameras. CameraSwitched fires when done.
 
-Your offer or answer is ready. Send type and sdp to the other device, which passes them to SetRemoteDescription.
+![CameraSwitched](images/blocks/PeerConnection1-CameraSwitched.png)
 
-| Parameter | Type |
-|---|---|
-| type | text |
-| sdp | text |
+**CameraSwitched:** The camera switched. Front is true when the front camera is now in use.
 
-### IceCandidateFound(sdpMid, sdpMLineIndex, candidate)
+![get MicrophoneEnabled](images/blocks/PeerConnection1-getMicrophoneEnabled.png) ![set MicrophoneEnabled](images/blocks/PeerConnection1-setMicrophoneEnabled.png)
 
-A way to reach this device was found. Send all three values to the other device, which passes them to AddIceCandidate.
+**MicrophoneEnabled** (read-write): Whether your microphone's audio is sent. When false, the other device hears silence.
 
-| Parameter | Type |
-|---|---|
-| sdpMid | text |
-| sdpMLineIndex | number |
-| candidate | text |
+![get CameraEnabled](images/blocks/PeerConnection1-getCameraEnabled.png) ![set CameraEnabled](images/blocks/PeerConnection1-setCameraEnabled.png)
 
-### ConnectionStateChanged(state)
+**CameraEnabled** (read-write): Whether your camera's video is sent. When false, the other device sees black.
 
-The connection's state changed.
+![get Speakerphone](images/blocks/PeerConnection1-getSpeakerphone.png) ![set Speakerphone](images/blocks/PeerConnection1-setSpeakerphone.png)
 
-| Parameter | Type |
-|---|---|
-| state | ConnectionState |
+**Speakerphone** (read-write): Whether call audio plays through the loudspeaker. When false, it plays through the earpiece, or a connected headset.
 
-### DataChannelOpened(label)
+![get VideoWidth](images/blocks/PeerConnection1-getVideoWidth.png) ![set VideoWidth](images/blocks/PeerConnection1-setVideoWidth.png)
 
-A data channel is ready to send and receive.
+**VideoWidth** (read-write): The camera's capture width in pixels for the next StartLocalMedia. The camera uses its closest size.
 
-| Parameter | Type |
-|---|---|
-| label | text |
+![get VideoHeight](images/blocks/PeerConnection1-getVideoHeight.png) ![set VideoHeight](images/blocks/PeerConnection1-setVideoHeight.png)
 
-### DataChannelClosed(label)
+**VideoHeight** (read-write): The camera's capture height in pixels for the next StartLocalMedia.
 
-A data channel closed.
+![get VideoFrameRate](images/blocks/PeerConnection1-getVideoFrameRate.png) ![set VideoFrameRate](images/blocks/PeerConnection1-setVideoFrameRate.png)
 
-| Parameter | Type |
-|---|---|
-| label | text |
+**VideoFrameRate** (read-write): The camera's frames per second for the next StartLocalMedia.
 
-### MessageReceived(label, text)
+## Video on screen
 
-Text arrived on a data channel.
+![ShowLocalVideo](images/blocks/PeerConnection1-ShowLocalVideo.png)
 
-| Parameter | Type |
-|---|---|
-| label | text |
-| text | text |
+**ShowLocalVideo:** Shows your camera's video in an arrangement, filling it. Show it in the same arrangement as the remote video to get a small picture in the corner.
 
-### Error(operation, message)
+![ShowRemoteVideo](images/blocks/PeerConnection1-ShowRemoteVideo.png)
 
-A block or the connection failed. Without this event, Screen.ErrorOccurred fires instead.
+**ShowRemoteVideo:** Shows the other device's video in an arrangement, filling it.
 
-| Parameter | Type |
-|---|---|
-| operation | text |
-| message | text |
+![RemoteTrackAdded](images/blocks/PeerConnection1-RemoteTrackAdded.png)
 
-## Methods
+**RemoteTrackAdded:** The other device's audio or video arrived. Kind is audio or video. Audio plays by itself; show video with ShowRemoteVideo.
 
-### StartLocalMedia(audio, video)
+![get MirrorLocalVideo](images/blocks/PeerConnection1-getMirrorLocalVideo.png) ![set MirrorLocalVideo](images/blocks/PeerConnection1-setMirrorLocalVideo.png)
 
-Starts the microphone, the camera or both, asking for permission first. LocalMediaStarted fires when they're ready: create the offer or answer after it so the other device receives them. If the user refuses, Screen.PermissionDenied fires.
+**MirrorLocalVideo** (read-write): Whether your own video is shown mirrored while the front camera is in use. The other device always sees it unmirrored.
 
-| Parameter | Type |
-|---|---|
-| audio | boolean |
-| video | boolean |
+![get VideoScaling](images/blocks/PeerConnection1-getVideoScaling.png) ![set VideoScaling](images/blocks/PeerConnection1-setVideoScaling.png)
 
-### StopLocalMedia()
+**VideoScaling** (read-write): How video fits its view: Fill crops the edges, Fit shows the whole picture.
 
-Stops the camera and microphone.
+## Connecting
 
-### ShowLocalVideo(arrangement)
+![CreateOffer](images/blocks/PeerConnection1-CreateOffer.png)
 
-Shows your camera's video in an arrangement, filling it. Show it in the same arrangement as the remote video to get a small picture in the corner.
+**CreateOffer:** Starts a connection by creating an offer. LocalDescriptionSet fires with it: send it to the other device. Start local media and create data channels first.
 
-| Parameter | Type |
-|---|---|
-| arrangement | component |
+![CreateAnswer](images/blocks/PeerConnection1-CreateAnswer.png)
 
-### ShowRemoteVideo(arrangement)
+**CreateAnswer:** Answers an offer passed to SetRemoteDescription. LocalDescriptionSet fires with the answer: send it back to the other device.
 
-Shows the other device's video in an arrangement, filling it.
+![SetRemoteDescription](images/blocks/PeerConnection1-SetRemoteDescription.png)
 
-| Parameter | Type |
-|---|---|
-| arrangement | component |
+**SetRemoteDescription:** Applies the other device's offer or answer. Type is offer or answer.
 
-### SwitchCamera()
+![AddIceCandidate](images/blocks/PeerConnection1-AddIceCandidate.png)
 
-Switches between the front and back cameras. CameraSwitched fires when done.
+**AddIceCandidate:** Adds an ICE candidate from the other device. Candidates that arrive before the other device's description are kept until it's set.
 
-### CreateOffer()
+![LocalDescriptionSet](images/blocks/PeerConnection1-LocalDescriptionSet.png)
 
-Starts a connection by creating an offer. LocalDescriptionSet fires with it: send it to the other device. Start local media and create data channels first.
+**LocalDescriptionSet:** Your offer or answer is ready. Send type and sdp to the other device, which passes them to SetRemoteDescription.
 
-### CreateAnswer()
+![IceCandidateFound](images/blocks/PeerConnection1-IceCandidateFound.png)
 
-Answers an offer passed to SetRemoteDescription. LocalDescriptionSet fires with the answer: send it back to the other device.
+**IceCandidateFound:** A way to reach this device was found. Send all three values to the other device, which passes them to AddIceCandidate.
 
-### SetRemoteDescription(type, sdp)
+![ConnectionStateChanged](images/blocks/PeerConnection1-ConnectionStateChanged.png)
 
-Applies the other device's offer or answer. Type is offer or answer.
+**ConnectionStateChanged:** The connection's state changed.
 
-| Parameter | Type |
-|---|---|
-| type | text |
-| sdp | text |
+![get ConnectionState](images/blocks/PeerConnection1-getConnectionState.png)
 
-### AddIceCandidate(sdpMid, sdpMLineIndex, candidate)
+**ConnectionState** (read-only): The connection's state.
 
-Adds an ICE candidate from the other device. Candidates that arrive before the other device's description are kept until it's set.
+![get IceServers](images/blocks/PeerConnection1-getIceServers.png) ![set IceServers](images/blocks/PeerConnection1-setIceServers.png)
 
-| Parameter | Type |
-|---|---|
-| sdpMid | text |
-| sdpMLineIndex | number |
-| candidate | text |
+**IceServers** (read-write): The STUN and TURN servers used by the next connection: a list of dictionaries with urls (text or a list), and username and credential for TURN servers. Defaults to Google's public STUN server.
 
-### CreateDataChannel(label)
+![Close](images/blocks/PeerConnection1-Close.png)
 
-Creates a data channel for text messages. Create it before CreateOffer; the other device gets it too, and DataChannelOpened fires on both when it's ready.
+**Close:** Ends the connection. The other device's data channels close, and its connection state changes once it notices.
 
-| Parameter | Type |
-|---|---|
-| label | text |
+## Data channels
 
-### Send(label, text)
+![CreateDataChannel](images/blocks/PeerConnection1-CreateDataChannel.png)
 
-Sends text over an open data channel.
+**CreateDataChannel:** Creates a data channel for text messages. Create it before CreateOffer; the other device gets it too, and DataChannelOpened fires on both when it's ready.
 
-| Parameter | Type |
-|---|---|
-| label | text |
-| text | text |
+![Send](images/blocks/PeerConnection1-Send.png)
 
-### Close()
+**Send:** Sends text over an open data channel.
 
-Ends the connection. The other device's data channels close, and its connection state changes once it notices.
+![DataChannelOpened](images/blocks/PeerConnection1-DataChannelOpened.png)
 
-## Properties
+**DataChannelOpened:** A data channel is ready to send and receive.
 
-### IceServers
+![DataChannelClosed](images/blocks/PeerConnection1-DataChannelClosed.png)
 
-The STUN and TURN servers used by the next connection: a list of dictionaries with urls (text or a list), and username and credential for TURN servers. Defaults to Google's public STUN server.
+**DataChannelClosed:** A data channel closed.
 
-`list`, read-write.
+![MessageReceived](images/blocks/PeerConnection1-MessageReceived.png)
 
-### ConnectionState
+**MessageReceived:** Text arrived on a data channel.
 
-The connection's state.
+## Errors
 
-`ConnectionState`, read-only.
+![Error](images/blocks/PeerConnection1-Error.png)
 
-### MicrophoneEnabled
-
-Whether your microphone's audio is sent. When false, the other device hears silence.
-
-`boolean`, read-write, designer default `True`.
-
-### CameraEnabled
-
-Whether your camera's video is sent. When false, the other device sees black.
-
-`boolean`, read-write, designer default `True`.
-
-### Speakerphone
-
-Whether call audio plays through the loudspeaker. When false, it plays through the earpiece, or a connected headset.
-
-`boolean`, read-write, designer default `True`.
-
-### MirrorLocalVideo
-
-Whether your own video is shown mirrored while the front camera is in use. The other device always sees it unmirrored.
-
-`boolean`, read-write, designer default `True`.
-
-### VideoScaling
-
-How video fits its view: Fill crops the edges, Fit shows the whole picture.
-
-`VideoScaling`, read-write, designer default `Fill`.
-
-### VideoWidth
-
-The camera's capture width in pixels for the next StartLocalMedia. The camera uses its closest size.
-
-`number`, read-write, designer default `1280`.
-
-### VideoHeight
-
-The camera's capture height in pixels for the next StartLocalMedia.
-
-`number`, read-write, designer default `720`.
-
-### VideoFrameRate
-
-The camera's frames per second for the next StartLocalMedia.
-
-`number`, read-write, designer default `30`.
+**Error:** A block or the connection failed. Without this event, Screen.ErrorOccurred fires instead.
 
 ## Dropdowns
 
-### ConnectionState
+![ConnectionState](images/blocks/helper-ConnectionState.png)
 
-| Option | Value | Description |
-|---|---|---|
-| New | `New` | No connection attempt has started yet. |
-| Connecting | `Connecting` | The peers are finding a network path to each other. |
-| Connected | `Connected` | Media and data flow between the peers. |
-| Disconnected | `Disconnected` | The network path was lost. WebRTC tries to recover it. |
-| Failed | `Failed` | The connection couldn't be established or recovered. |
-| Closed | `Closed` | The connection was closed. |
+**ConnectionState:** New, Connecting, Connected, Disconnected, Failed, Closed
 
-### VideoScaling
+![VideoScaling](images/blocks/helper-VideoScaling.png)
 
-| Option | Value | Description |
-|---|---|---|
-| Fill | `Fill` | Fills the view, cropping the video's edges. |
-| Fit | `Fit` | Shows the whole video, with bars where its shape differs from the view's. |
+**VideoScaling:** Fill, Fit

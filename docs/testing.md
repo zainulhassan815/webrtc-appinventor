@@ -43,3 +43,19 @@ which uses a fake camera and [`samples/web-call/call.js`](../samples/web-call/ca
 It passes when the browser sends and decodes video, the phone shows `Connected`, and
 the phone notices the hang-up. `phone` or `browser` picks who sends the offer. Any
 Supabase project works: the sample needs no tables.
+
+## Block images
+
+```
+unzip -p out/dev.dreamerslab.webrtc.aix dev.dreamerslab.webrtc/components.json > components.json
+python3 tests/e2e/blocks/palette.py components.json palette
+node tests/e2e/blocks/images.js <appinventor> palette/Screen1.scm palette/<id>.bky components.json docs/images/blocks <id>
+python3 docs/blocks.py
+```
+
+`palette.py` writes a screen with the component and a `.bky` file per block, named by
+the block's id (like `PeerConnection1.CreateOffer` or `helper.VideoScaling`), and
+prints the ids. `images.js` opens each in App Inventor's blocks editor and saves the
+image App Inventor exports, which contains the block. Render each block from its own
+file. `docs/blocks.py` then writes [Blocks](blocks.md).
+
